@@ -12,11 +12,17 @@ GtkWidget *info;
 GtkWidget *entry_nombre;
 GtkWidget *entry_correo;
 GtkWidget *entry_id;
+GtkWidget *rc;
+GtkWidget *rl;
+GtkWidget *rlc;
+GtkWidget *combo_tipo;
+GtkWidget *entry_R;
+GtkWidget *entry_C;
+GtkWidget *entry_L;
+GtkWidget *entry_result;
 
 GdkColor color_negro = {0, 0, 0, 0};
 GdkColor color_blanco= {0, 0, 0, 0};
-
-
 
 void ventana_main() {
     win1 = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -154,12 +160,27 @@ void ventana_diseñar() {
     gtk_label_set_markup(GTK_LABEL(label_msg), "<span font_desc='20' weight='bold'>Seleccione tipo de filtro:</span>");
     gtk_misc_set_alignment(GTK_MISC(label_msg), 0.5, 0.5);
     gtk_box_pack_start(GTK_BOX(vbox), label_msg, FALSE, FALSE, 10);
-	
-	GtkWidget *lable_msg2 = gtk_label_new(NULL);
-    gtk_label_set_markup(GTK_LABEL(lable_msg2), "<span font_desc='18' weight='bold'>...</span>");
-    gtk_misc_set_alignment(GTK_MISC(lable_msg2), 0.5, 0.5);
-    gtk_box_pack_start(GTK_BOX(vbox), lable_msg2, FALSE, FALSE, 10);
 
+    GtkWidget *button_rc = gtk_button_new_with_label("RC");
+    GtkWidget *label_rc = gtk_bin_get_child(GTK_BIN(button_rc));
+    gtk_widget_modify_fg(label_rc, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_modify_fg(label_rc, GTK_STATE_PRELIGHT, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), button_rc, FALSE, FALSE, 5);
+    g_signal_connect(button_rc, "clicked", G_CALLBACK(on_rc_button), NULL);
+
+    GtkWidget *button_rl = gtk_button_new_with_label("RL");
+    GtkWidget *label_rl = gtk_bin_get_child(GTK_BIN(button_rl));
+    gtk_widget_modify_fg(label_rl, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_modify_fg(label_rl, GTK_STATE_PRELIGHT, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), button_rl, FALSE, FALSE, 5);
+    g_signal_connect(button_rl, "clicked", G_CALLBACK(on_rl_button), NULL);
+
+    GtkWidget *button_rlc = gtk_button_new_with_label("RLC");
+    GtkWidget *label_rlc = gtk_bin_get_child(GTK_BIN(button_rlc));
+    gtk_widget_modify_fg(label_rlc, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_modify_fg(label_rlc, GTK_STATE_PRELIGHT, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), button_rlc, FALSE, FALSE, 5);
+    g_signal_connect(button_rlc, "clicked", G_CALLBACK(on_rlc_button), NULL);
 
     GtkWidget *button = gtk_button_new_with_label("Regresar");
         GtkWidget *label = gtk_bin_get_child(GTK_BIN(button));
@@ -258,4 +279,230 @@ void ventana_info() {
         g_signal_connect(button, "clicked", G_CALLBACK(on_regresar), NULL);
 
     gtk_widget_show_all(info);
+}
+
+void ventana_rc() {
+    rc = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(rc), "Filtro RC");
+    gtk_window_set_default_size(GTK_WINDOW(rc), 350, 250);
+    gtk_container_set_border_width(GTK_CONTAINER(rc), 15);
+    g_signal_connect(rc, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+
+    GtkWidget *vbox = gtk_vbox_new(FALSE, 10);
+    gtk_container_add(GTK_CONTAINER(rc), vbox);
+
+    GtkWidget *label_msg = gtk_label_new(NULL);
+    gtk_label_set_markup(GTK_LABEL(label_msg), "<span font_desc='20' weight='bold'>Diseño Filtro RC</span>");
+    gtk_misc_set_alignment(GTK_MISC(label_msg), 0.5, 0.5);
+    gtk_box_pack_start(GTK_BOX(vbox), label_msg, FALSE, FALSE, 10);
+
+    // Select
+    GtkWidget *radio_pasa_banda = gtk_radio_button_new_with_label(NULL, "Pasa altas (Low-pass)");
+    GtkWidget *radio_rechaza_banda = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio_pasa_banda), "Pasa bajas (Low-pass)");
+    gtk_box_pack_start(GTK_BOX(vbox), radio_pasa_banda, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), radio_rechaza_banda, FALSE, FALSE, 0);
+
+    // Entries
+    GtkWidget *label_R = gtk_label_new("Resistencia (Ohm):");
+    gtk_misc_set_alignment(GTK_MISC(label_R), 0, 0.5);  
+    entry_R = gtk_entry_new();
+    gtk_widget_modify_text(entry_R, GTK_STATE_NORMAL, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), label_R, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), entry_R, FALSE, FALSE, 5);
+
+    GtkWidget *label_C = gtk_label_new("Capacitancia (F):");
+    gtk_misc_set_alignment(GTK_MISC(label_C), 0, 0.5);
+    entry_C = gtk_entry_new();
+	gtk_widget_modify_text(entry_C, GTK_STATE_NORMAL, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), label_C, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), entry_C, FALSE, FALSE, 5);
+
+    // Label resultados
+    GtkWidget *label_result = gtk_label_new("Resultados:");
+    gtk_misc_set_alignment(GTK_MISC(label_result), 0, 0.5);
+    GtkWidget *textview_result = gtk_text_view_new();
+    gtk_text_view_set_editable(GTK_TEXT_VIEW(textview_result), FALSE);
+    gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(textview_result), FALSE);
+    gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(textview_result), GTK_WRAP_WORD);
+    gtk_widget_modify_text(textview_result, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_set_size_request(textview_result, -1, 100);
+    gtk_box_pack_start(GTK_BOX(vbox), label_result, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), textview_result, FALSE, FALSE, 5);
+
+    // Botón calcular
+    GtkWidget *btn_calcular = gtk_button_new_with_label("Calcular");
+    GtkWidget *label_calcular = gtk_bin_get_child(GTK_BIN(btn_calcular));
+    gtk_widget_modify_fg(label_calcular, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_modify_fg(label_calcular, GTK_STATE_PRELIGHT, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), btn_calcular, FALSE, FALSE, 10);
+    //g_signal_connect(btn_calcular, "clicked", G_CALLBACK(on_calcular), NULL);
+
+    GtkWidget *btn_guardar = gtk_button_new_with_label("Guardar");
+    GtkWidget *label_guardar = gtk_bin_get_child(GTK_BIN(btn_guardar));
+    gtk_widget_modify_fg(label_guardar, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_modify_fg(label_guardar, GTK_STATE_PRELIGHT, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), btn_guardar, FALSE, FALSE, 10);
+    g_signal_connect(btn_guardar, "clicked", G_CALLBACK(on_guardar), NULL);
+
+    GtkWidget *button = gtk_button_new_with_label("Regresar");
+    GtkWidget *label = gtk_bin_get_child(GTK_BIN(button));
+    gtk_widget_modify_fg(label, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_modify_fg(label, GTK_STATE_PRELIGHT, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 5);
+    g_signal_connect(button, "clicked", G_CALLBACK(on_regresarF), NULL);
+
+    gtk_widget_show_all(rc);
+}
+
+void ventana_rl() {
+    rl = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(rl), "Filtro RL");
+    gtk_window_set_default_size(GTK_WINDOW(rl), 350, 250);
+    gtk_container_set_border_width(GTK_CONTAINER(rl), 15);
+    g_signal_connect(rl, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+
+    GtkWidget *vbox = gtk_vbox_new(FALSE, 10);
+    gtk_container_add(GTK_CONTAINER(rl), vbox);
+
+    GtkWidget *label_msg = gtk_label_new(NULL);
+    gtk_label_set_markup(GTK_LABEL(label_msg), "<span font_desc='20' weight='bold'>Diseño Filtro RL</span>");
+    gtk_misc_set_alignment(GTK_MISC(label_msg), 0.5, 0.5);
+    gtk_box_pack_start(GTK_BOX(vbox), label_msg, FALSE, FALSE, 10);
+
+    // Select
+    GtkWidget *radio_pasa_banda = gtk_radio_button_new_with_label(NULL, "Pasa altas (Low-pass)");
+    GtkWidget *radio_rechaza_banda = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio_pasa_banda), "Pasa bajas (Low-pass)");
+    gtk_box_pack_start(GTK_BOX(vbox), radio_pasa_banda, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), radio_rechaza_banda, FALSE, FALSE, 0);
+
+    // Entries
+    GtkWidget *label_R = gtk_label_new("Resistencia (Ohm):");
+    gtk_misc_set_alignment(GTK_MISC(label_R), 0, 0.5);  
+    entry_R = gtk_entry_new();
+    gtk_widget_modify_text(entry_R, GTK_STATE_NORMAL, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), label_R, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), entry_R, FALSE, FALSE, 5);
+
+    GtkWidget *label_L = gtk_label_new("Inductancia (H):");
+    gtk_misc_set_alignment(GTK_MISC(label_L), 0, 0.5);
+    entry_L = gtk_entry_new();
+	gtk_widget_modify_text(entry_L, GTK_STATE_NORMAL, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), label_L, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), entry_L, FALSE, FALSE, 5);
+
+    // Label resultados
+    GtkWidget *label_result = gtk_label_new("Resultados:");
+    gtk_misc_set_alignment(GTK_MISC(label_result), 0, 0.5);
+    GtkWidget *textview_result = gtk_text_view_new();
+    gtk_text_view_set_editable(GTK_TEXT_VIEW(textview_result), FALSE);
+    gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(textview_result), FALSE);
+    gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(textview_result), GTK_WRAP_WORD);
+    gtk_widget_modify_text(textview_result, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_set_size_request(textview_result, -1, 100);
+    gtk_box_pack_start(GTK_BOX(vbox), label_result, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), textview_result, FALSE, FALSE, 5);
+
+    // Botón calcular
+    GtkWidget *btn_calcular = gtk_button_new_with_label("Calcular");
+    GtkWidget *label_calcular = gtk_bin_get_child(GTK_BIN(btn_calcular));
+    gtk_widget_modify_fg(label_calcular, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_modify_fg(label_calcular, GTK_STATE_PRELIGHT, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), btn_calcular, FALSE, FALSE, 10);
+    //g_signal_connect(btn_calcular, "clicked", G_CALLBACK(on_calcular), NULL);
+
+    GtkWidget *btn_guardar = gtk_button_new_with_label("Guardar");
+    GtkWidget *label_guardar = gtk_bin_get_child(GTK_BIN(btn_guardar));
+    gtk_widget_modify_fg(label_guardar, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_modify_fg(label_guardar, GTK_STATE_PRELIGHT, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), btn_guardar, FALSE, FALSE, 10);
+    g_signal_connect(btn_guardar, "clicked", G_CALLBACK(on_guardar), NULL);
+
+    GtkWidget *button = gtk_button_new_with_label("Regresar");
+    GtkWidget *label = gtk_bin_get_child(GTK_BIN(button));
+    gtk_widget_modify_fg(label, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_modify_fg(label, GTK_STATE_PRELIGHT, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 5);
+    g_signal_connect(button, "clicked", G_CALLBACK(on_regresarF), NULL);
+
+    gtk_widget_show_all(rl);
+}
+
+void ventana_rlc() {
+    rlc = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(rlc), "Filtro RLC");
+    gtk_window_set_default_size(GTK_WINDOW(rlc), 350, 250);
+    gtk_container_set_border_width(GTK_CONTAINER(rlc), 15);
+    g_signal_connect(rlc, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+
+    GtkWidget *vbox = gtk_vbox_new(FALSE, 10);
+    gtk_container_add(GTK_CONTAINER(rlc), vbox);
+
+    GtkWidget *label_msg = gtk_label_new(NULL);
+    gtk_label_set_markup(GTK_LABEL(label_msg), "<span font_desc='20' weight='bold'>Diseño Filtro RLC</span>");
+    gtk_misc_set_alignment(GTK_MISC(label_msg), 0.5, 0.5);
+    gtk_box_pack_start(GTK_BOX(vbox), label_msg, FALSE, FALSE, 10);
+
+    // Select
+    GtkWidget *radio_pasa_banda = gtk_radio_button_new_with_label(NULL, "Pasa banda (Band-pass)");
+    GtkWidget *radio_rechaza_banda = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio_pasa_banda), "Rechaza banda (Notch)");
+    gtk_box_pack_start(GTK_BOX(vbox), radio_pasa_banda, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), radio_rechaza_banda, FALSE, FALSE, 0);
+
+    // Entries
+    GtkWidget *label_R = gtk_label_new("Resistencia (Ohm):");
+    gtk_misc_set_alignment(GTK_MISC(label_R), 0, 0.5);  
+    entry_R = gtk_entry_new();
+    gtk_widget_modify_text(entry_R, GTK_STATE_NORMAL, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), label_R, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), entry_R, FALSE, FALSE, 5);
+
+    GtkWidget *label_C = gtk_label_new("Capacitancia (F):");
+    gtk_misc_set_alignment(GTK_MISC(label_C), 0, 0.5);
+    entry_C = gtk_entry_new();
+	gtk_widget_modify_text(entry_C, GTK_STATE_NORMAL, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), label_C, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), entry_C, FALSE, FALSE, 5);
+
+    GtkWidget *label_L = gtk_label_new("Inductancia (H):");
+    gtk_misc_set_alignment(GTK_MISC(label_L), 0, 0.5);
+    entry_L = gtk_entry_new();
+	gtk_widget_modify_text(entry_L, GTK_STATE_NORMAL, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), label_L, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), entry_L, FALSE, FALSE, 5);
+
+    // Label resultados
+    GtkWidget *label_result = gtk_label_new("Resultados:");
+    gtk_misc_set_alignment(GTK_MISC(label_result), 0, 0.5);
+    GtkWidget *textview_result = gtk_text_view_new();
+    gtk_text_view_set_editable(GTK_TEXT_VIEW(textview_result), FALSE);
+    gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(textview_result), FALSE);
+    gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(textview_result), GTK_WRAP_WORD);
+    gtk_widget_modify_text(textview_result, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_set_size_request(textview_result, -1, 100);
+    gtk_box_pack_start(GTK_BOX(vbox), label_result, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), textview_result, FALSE, FALSE, 5);
+
+    // Botón calcular
+    GtkWidget *btn_calcular = gtk_button_new_with_label("Calcular");
+    GtkWidget *label_calcular = gtk_bin_get_child(GTK_BIN(btn_calcular));
+    gtk_widget_modify_fg(label_calcular, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_modify_fg(label_calcular, GTK_STATE_PRELIGHT, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), btn_calcular, FALSE, FALSE, 10);
+    //g_signal_connect(btn_calcular, "clicked", G_CALLBACK(on_calcular), NULL);
+
+    GtkWidget *btn_guardar = gtk_button_new_with_label("Guardar");
+    GtkWidget *label_guardar = gtk_bin_get_child(GTK_BIN(btn_guardar));
+    gtk_widget_modify_fg(label_guardar, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_modify_fg(label_guardar, GTK_STATE_PRELIGHT, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), btn_guardar, FALSE, FALSE, 10);
+    g_signal_connect(btn_guardar, "clicked", G_CALLBACK(on_guardar), NULL);
+
+    GtkWidget *button = gtk_button_new_with_label("Regresar");
+    GtkWidget *label = gtk_bin_get_child(GTK_BIN(button));
+    gtk_widget_modify_fg(label, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_modify_fg(label, GTK_STATE_PRELIGHT, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 5);
+    g_signal_connect(button, "clicked", G_CALLBACK(on_regresarF), NULL);
+
+    gtk_widget_show_all(rlc);
 }

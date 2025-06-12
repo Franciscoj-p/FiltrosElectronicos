@@ -1,0 +1,136 @@
+//CONSULTAS PROFESOR
+	Uso de variables const char* 
+	uso del widget dialog, radioButton, textField
+	orden y contenido de archivos .h y .cpp
+    uso de extern
+
+
+
+
+INICIAR PROGRAMA
+
+MOSTRAR mensaje "Bienvenido al Diseñador de Filtros Electrónicos"
+
+PEDIR id_ingeniero
+PEDIR nombre_ingeniero
+PEDIR correo_ingeniero
+
+REPETIR
+    MOSTRAR menú principal:
+        1. Crear nuevo diseño de filtro
+        2. Mostrar diseños ordenados por costo y opciones (Editar, Eliminar, Buscar)
+        3. Mostrar info del programa
+        4. Salir
+
+    PEDIR opción
+
+    SEGÚN opción HACER
+
+        CASO 1:
+            /// Crear nuevo filtro
+            MOSTRAR "Seleccione tipo de filtro:"
+                a. RC
+                b. RL
+                c. RLC
+            PEDIR tipo_filtro
+
+            MOSTRAR "Seleccione configuración:"
+                a. Pasa bajas
+                b. Pasa altas
+                c. Pasa banda (solo RLC)
+                d. Rechaza banda (solo RLC)
+            PEDIR tipo_config
+
+            PEDIR valores: resistencia, capacitancia, inductancia (según tipo)
+
+            CALCULAR:
+                - frecuencia de corte
+                - ganancia
+                - factor de calidad
+                - ancho de banda
+                - atenuación en dB
+                - fase
+
+            REDONDEAR valores a serie E12 o E24
+
+            GUARDAR filtro en matriz
+
+            MOSTRAR resultados al usuario
+
+        CASO 2:
+            SI matriz de filtros está vacía ENTONCES
+                MOSTRAR "No hay filtros registrados"
+            SINO
+                ORDENAR matriz de filtros por costo (menor a mayor)
+                MOSTRAR lista completa de filtros con sus costos
+
+                // Submenú dentro de mostrar filtros
+                REPETIR
+                    MOSTRAR:
+                        a) Editar diseño
+                        b) Eliminar diseño
+                        c) Buscar diseño por ID
+                        d) Volver al menú principal
+                    PEDIR sub_opción
+
+                    SEGÚN sub_opción HACER
+                        CASO a:
+                            PEDIR ID del filtro a editar
+                            BUSCAR filtro en matriz
+                            SI encontrado ENTONCES
+                                MOSTRAR datos actuales
+                                PEDIR nuevos valores
+                                RECALCULAR y ACTUALIZAR filtro
+                                MOSTRAR "Filtro actualizado"
+                            SINO
+                                MOSTRAR "Filtro no encontrado"
+                            FIN SI
+
+                        CASO b:
+                            PEDIR ID del filtro a eliminar
+                            BUSCAR filtro en matriz
+                            SI encontrado ENTONCES
+                                CONFIRMAR eliminación
+                                SI confirmado ENTONCES
+                                    ELIMINAR filtro de matriz
+                                    MOSTRAR "Filtro eliminado"
+                                SINO
+                                    MOSTRAR "Eliminación cancelada"
+                                FIN SI
+                            SINO
+                                MOSTRAR "Filtro no encontrado"
+                            FIN SI
+
+                        CASO c:
+                            PEDIR ID para buscar
+                            BUSCAR filtro en matriz
+                            SI encontrado ENTONCES
+                                MOSTRAR filtro
+                            SINO
+                                MOSTRAR "Filtro no encontrado"
+                            FIN SI
+
+                        CASO d:
+                            SALIR del submenú
+
+                        OTRO CASO:
+                            MOSTRAR "Opción inválida"
+                    FIN SEGÚN
+
+                HASTA sub_opción = d
+            FIN SI
+
+        CASO 3: - INFO
+            MOSTRAR versión y desarrolladores
+
+        CASO 4:
+            SALIR del programa
+
+        OTRO CASO:
+            MOSTRAR "Opción inválida"
+
+    FIN SEGÚN
+
+HASTA opción = 4
+
+FINALIZAR PROGRAMA
