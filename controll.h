@@ -1,6 +1,5 @@
 #include <gtk/gtk.h>
 
-// Ventanas globales
 extern GtkWidget *win1;
 extern GtkWidget *datos;
 extern GtkWidget *menu;
