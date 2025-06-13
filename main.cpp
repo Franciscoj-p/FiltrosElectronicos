@@ -4,7 +4,8 @@
 #include "calc.h"
 #include <gtk/gtk.h>
 
-//comando para compilar: g++ main.cpp controll.cpp data.cpp btn.cpp -o main `pkg-config --cflags --libs gtk+-2.0`
+//comando para compilar: g++ main.cpp controll.cpp data.cpp btn.cpp calc.cpp -o main `pkg-config --cflags --libs gtk+-2.0`
+// ./main
 
 
 int main(int argc, char *argv[]) {

@@ -33,9 +33,9 @@ datosFiltro calcular_rc(GtkWidget *entry_R, GtkWidget *entry_C, GtkWidget *radio
     std::string tipo_filtro;
 
     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio_pasa_banda))) {
-        tipo_filtro = "High-pass"; // Filtro pasa altas
+        tipo_filtro = "High-pass"; 
     } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio_rechaza_banda))) {
-        tipo_filtro = "Low-pass"; // Filtro pasa bajas
+        tipo_filtro = "Low-pass";
     } 
 
     double fc = 1.0 / (2 * M_PI * r * c);  // Frecuencia de corte en Hz
@@ -72,9 +72,9 @@ datosFiltro calcular_rl(GtkWidget *entry_R, GtkWidget *entry_L, GtkWidget *radio
     std::string tipo_filtro;
 
     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio_pasa_banda))) {
-        tipo_filtro = "High-pass"; // Filtro pasa altas
+        tipo_filtro = "High-pass";
     } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio_rechaza_banda))) {
-        tipo_filtro = "Low-pass"; // Filtro pasa bajas
+        tipo_filtro = "Low-pass"; 
     } 
 
     double fc = r / (2 * M_PI * l);  // Frecuencia de corte en Hz
@@ -112,9 +112,9 @@ datosFiltro calcular_rlc(GtkWidget *entry_R, GtkWidget *entry_L, GtkWidget *entr
 
 
     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio_pasa_banda))) {
-        tipo_filtro = "High-pass"; // Filtro pasa altas
+        tipo_filtro = "High-pass"; 
     } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio_rechaza_banda))) {
-        tipo_filtro = "Low-pass"; // Filtro pasa bajas
+        tipo_filtro = "Low-pass"; 
     }     
 
     double fc = 1.0 / (2 * M_PI * sqrt(l * c)); // Frecuencia de corte en Hz
