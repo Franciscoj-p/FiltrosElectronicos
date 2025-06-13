@@ -19,6 +19,9 @@ void on_rl_button(GtkWidget *widget, gpointer data);
 void on_rlc_button(GtkWidget *widget, gpointer data);
 void on_guardar(GtkWidget *widget, gpointer data);
 void on_ok_clicked_guardar(GtkButton *button, gpointer user_data);
+void on_calcularRC(GtkWidget *widget, gpointer data);
+void on_calcularRL(GtkWidget *widget, gpointer data);
+void on_calcularRLC(GtkWidget *widget, gpointer data);
 
 void on_ok_clicked_elimin(GtkButton *button, gpointer user_data);
 void on_ok_clicked_busc(GtkButton *button, gpointer user_data);

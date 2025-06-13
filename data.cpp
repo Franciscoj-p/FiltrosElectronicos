@@ -1,6 +1,7 @@
 #include "data.h"
 #include "controll.h"
 #include "btn.h"
+#include "calc.h"
 #include <gtk/gtk.h>
 #include <iostream>
 

@@ -1,6 +1,7 @@
 #include "controll.h"
 #include "data.h"
 #include "btn.h"
+#include "calc.h"
 #include <gtk/gtk.h>
 
 GtkWidget *win1;
@@ -19,7 +20,9 @@ GtkWidget *combo_tipo;
 GtkWidget *entry_R;
 GtkWidget *entry_C;
 GtkWidget *entry_L;
-GtkWidget *entry_result;
+GtkWidget *textview_result;
+GtkWidget *radio_pasa_banda;
+GtkWidget *radio_rechaza_banda;
 
 GdkColor color_negro = {0, 0, 0, 0};
 GdkColor color_blanco= {0, 0, 0, 0};
@@ -297,8 +300,8 @@ void ventana_rc() {
     gtk_box_pack_start(GTK_BOX(vbox), label_msg, FALSE, FALSE, 10);
 
     // Select
-    GtkWidget *radio_pasa_banda = gtk_radio_button_new_with_label(NULL, "Pasa altas (Low-pass)");
-    GtkWidget *radio_rechaza_banda = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio_pasa_banda), "Pasa bajas (Low-pass)");
+    radio_pasa_banda = gtk_radio_button_new_with_label(NULL, "Pasa altas (Low-pass)");
+    radio_rechaza_banda = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio_pasa_banda), "Pasa bajas (Low-pass)");
     gtk_box_pack_start(GTK_BOX(vbox), radio_pasa_banda, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), radio_rechaza_banda, FALSE, FALSE, 0);
 
@@ -320,7 +323,7 @@ void ventana_rc() {
     // Label resultados
     GtkWidget *label_result = gtk_label_new("Resultados:");
     gtk_misc_set_alignment(GTK_MISC(label_result), 0, 0.5);
-    GtkWidget *textview_result = gtk_text_view_new();
+    textview_result = gtk_text_view_new();
     gtk_text_view_set_editable(GTK_TEXT_VIEW(textview_result), FALSE);
     gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(textview_result), FALSE);
     gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(textview_result), GTK_WRAP_WORD);
@@ -335,7 +338,7 @@ void ventana_rc() {
     gtk_widget_modify_fg(label_calcular, GTK_STATE_NORMAL, &color_negro);
     gtk_widget_modify_fg(label_calcular, GTK_STATE_PRELIGHT, &color_negro);
     gtk_box_pack_start(GTK_BOX(vbox), btn_calcular, FALSE, FALSE, 10);
-    //g_signal_connect(btn_calcular, "clicked", G_CALLBACK(on_calcular), NULL);
+    g_signal_connect(btn_calcular, "clicked", G_CALLBACK(on_calcularRC), NULL);
 
     GtkWidget *btn_guardar = gtk_button_new_with_label("Guardar");
     GtkWidget *label_guardar = gtk_bin_get_child(GTK_BIN(btn_guardar));
@@ -370,8 +373,8 @@ void ventana_rl() {
     gtk_box_pack_start(GTK_BOX(vbox), label_msg, FALSE, FALSE, 10);
 
     // Select
-    GtkWidget *radio_pasa_banda = gtk_radio_button_new_with_label(NULL, "Pasa altas (Low-pass)");
-    GtkWidget *radio_rechaza_banda = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio_pasa_banda), "Pasa bajas (Low-pass)");
+    radio_pasa_banda = gtk_radio_button_new_with_label(NULL, "Pasa altas (Low-pass)");
+    radio_rechaza_banda = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio_pasa_banda), "Pasa bajas (Low-pass)");
     gtk_box_pack_start(GTK_BOX(vbox), radio_pasa_banda, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), radio_rechaza_banda, FALSE, FALSE, 0);
 
@@ -393,7 +396,7 @@ void ventana_rl() {
     // Label resultados
     GtkWidget *label_result = gtk_label_new("Resultados:");
     gtk_misc_set_alignment(GTK_MISC(label_result), 0, 0.5);
-    GtkWidget *textview_result = gtk_text_view_new();
+    textview_result = gtk_text_view_new();
     gtk_text_view_set_editable(GTK_TEXT_VIEW(textview_result), FALSE);
     gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(textview_result), FALSE);
     gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(textview_result), GTK_WRAP_WORD);
@@ -408,7 +411,7 @@ void ventana_rl() {
     gtk_widget_modify_fg(label_calcular, GTK_STATE_NORMAL, &color_negro);
     gtk_widget_modify_fg(label_calcular, GTK_STATE_PRELIGHT, &color_negro);
     gtk_box_pack_start(GTK_BOX(vbox), btn_calcular, FALSE, FALSE, 10);
-    //g_signal_connect(btn_calcular, "clicked", G_CALLBACK(on_calcular), NULL);
+    g_signal_connect(btn_calcular, "clicked", G_CALLBACK(on_calcularRL), NULL);
 
     GtkWidget *btn_guardar = gtk_button_new_with_label("Guardar");
     GtkWidget *label_guardar = gtk_bin_get_child(GTK_BIN(btn_guardar));
@@ -443,8 +446,8 @@ void ventana_rlc() {
     gtk_box_pack_start(GTK_BOX(vbox), label_msg, FALSE, FALSE, 10);
 
     // Select
-    GtkWidget *radio_pasa_banda = gtk_radio_button_new_with_label(NULL, "Pasa banda (Band-pass)");
-    GtkWidget *radio_rechaza_banda = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio_pasa_banda), "Rechaza banda (Notch)");
+    radio_pasa_banda = gtk_radio_button_new_with_label(NULL, "Pasa banda (Band-pass)");
+    radio_rechaza_banda = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio_pasa_banda), "Rechaza banda (Notch)");
     gtk_box_pack_start(GTK_BOX(vbox), radio_pasa_banda, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), radio_rechaza_banda, FALSE, FALSE, 0);
 
@@ -473,7 +476,7 @@ void ventana_rlc() {
     // Label resultados
     GtkWidget *label_result = gtk_label_new("Resultados:");
     gtk_misc_set_alignment(GTK_MISC(label_result), 0, 0.5);
-    GtkWidget *textview_result = gtk_text_view_new();
+    textview_result = gtk_text_view_new();
     gtk_text_view_set_editable(GTK_TEXT_VIEW(textview_result), FALSE);
     gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(textview_result), FALSE);
     gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(textview_result), GTK_WRAP_WORD);
@@ -488,7 +491,7 @@ void ventana_rlc() {
     gtk_widget_modify_fg(label_calcular, GTK_STATE_NORMAL, &color_negro);
     gtk_widget_modify_fg(label_calcular, GTK_STATE_PRELIGHT, &color_negro);
     gtk_box_pack_start(GTK_BOX(vbox), btn_calcular, FALSE, FALSE, 10);
-    //g_signal_connect(btn_calcular, "clicked", G_CALLBACK(on_calcular), NULL);
+    g_signal_connect(btn_calcular, "clicked", G_CALLBACK(on_calcularRLC), NULL);
 
     GtkWidget *btn_guardar = gtk_button_new_with_label("Guardar");
     GtkWidget *label_guardar = gtk_bin_get_child(GTK_BIN(btn_guardar));

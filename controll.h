@@ -20,7 +20,9 @@ extern GtkWidget *combo_tipo;
 extern GtkWidget *entry_R;
 extern GtkWidget *entry_C;
 extern GtkWidget *entry_L;
-extern GtkWidget *entry_result;
+extern GtkWidget *textview_result;
+extern GtkWidget *radio_pasa_banda;
+extern GtkWidget *radio_rechaza_banda;
 
 void ventana_main();
 void ventana_datos();

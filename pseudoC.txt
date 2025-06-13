@@ -1,6 +1,7 @@
 //CONSULTAS PROFESOR
 	Uso de variables const char* 
 	uso del widget dialog, radioButton, textField
+    uso de struct
 	orden y contenido de archivos .h y .cpp
     uso de extern
 

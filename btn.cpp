@@ -1,6 +1,7 @@
 #include "data.h"
 #include "controll.h"
 #include "btn.h"
+#include "calc.h"
 #include <gtk/gtk.h>
 
 GtkWidget *entry_guardar;
@@ -68,6 +69,21 @@ void on_aceptar(GtkWidget *widget, gpointer data) {
 	guardarDatosIng(entry_nombre, entry_correo, entry_id);
     gtk_widget_hide(datos);
     ventana_menu(); 
+}   
+
+void on_calcularRC(GtkWidget *widget, gpointer data) {
+    datosFiltro resultado = calcular_rc(entry_R, entry_C, radio_pasa_banda, radio_rechaza_banda, entry_nombre, entry_id);
+    mostrar_resultado(textview_result, resultado);
+}
+
+void on_calcularRL(GtkWidget *widget, gpointer data) {
+    datosFiltro resultado = calcular_rl(entry_R, entry_L, radio_pasa_banda, radio_rechaza_banda, entry_nombre, entry_id);
+    mostrar_resultado(textview_result, resultado);
+}
+
+void on_calcularRLC(GtkWidget *widget, gpointer data) {
+    datosFiltro resultado = calcular_rlc(entry_R, entry_L, entry_C, radio_pasa_banda, radio_rechaza_banda, entry_nombre, entry_id);
+    mostrar_resultado(textview_result, resultado);
 }
 
 void on_guardar(GtkWidget *widget, gpointer data) {
@@ -89,7 +105,7 @@ void on_guardar(GtkWidget *widget, gpointer data) {
     gtk_widget_modify_text(entry_guardar, GTK_STATE_NORMAL, &color_negro);
 
     gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), entry_guardar, FALSE, FALSE, 0);
     gtk_container_add(GTK_CONTAINER(content_area), vbox);
 
     GtkWidget *ok_button = gtk_button_new_with_label("Guardar");
