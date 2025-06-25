@@ -311,12 +311,12 @@ void ventana_rc() {
     gtk_box_pack_start(GTK_BOX(vbox), label_R, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), entry_R, FALSE, FALSE, 5);
 
-    GtkWidget *label_C = gtk_label_new("Capacitancia (F):");
-    gtk_misc_set_alignment(GTK_MISC(label_C), 0, 0.5);
-    entry_C = gtk_entry_new();
-	gtk_widget_modify_text(entry_C, GTK_STATE_NORMAL, &color_negro);
-    gtk_box_pack_start(GTK_BOX(vbox), label_C, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), entry_C, FALSE, FALSE, 5);
+    GtkWidget *label_fc = gtk_label_new("Frecuencia de Corte:");
+    gtk_misc_set_alignment(GTK_MISC(label_fc), 0, 0.5);
+    entry_fc = gtk_entry_new();
+	gtk_widget_modify_text(entry_fc, GTK_STATE_NORMAL, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), label_fc, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), entry_fc, FALSE, FALSE, 5);
 
     GtkWidget *label_result = gtk_label_new("Resultados:");
     gtk_misc_set_alignment(GTK_MISC(label_result), 0, 0.5);
@@ -387,12 +387,12 @@ void ventana_rl() {
     gtk_box_pack_start(GTK_BOX(vbox), label_R, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), entry_R, FALSE, FALSE, 5);
 
-    GtkWidget *label_L = gtk_label_new("Inductancia (H):");
-    gtk_misc_set_alignment(GTK_MISC(label_L), 0, 0.5);
-    entry_L = gtk_entry_new();
-	gtk_widget_modify_text(entry_L, GTK_STATE_NORMAL, &color_negro);
-    gtk_box_pack_start(GTK_BOX(vbox), label_L, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), entry_L, FALSE, FALSE, 5);
+    GtkWidget *label_fc = gtk_label_new("Frecuencia de Corte:");
+    gtk_misc_set_alignment(GTK_MISC(label_fc), 0, 0.5);
+    entry_fc = gtk_entry_new();
+	gtk_widget_modify_text(entry_fc, GTK_STATE_NORMAL, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), label_fc, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), entry_fc, FALSE, FALSE, 5);
 
     GtkWidget *label_result = gtk_label_new("Resultados:");
     gtk_misc_set_alignment(GTK_MISC(label_result), 0, 0.5);
@@ -470,12 +470,12 @@ void ventana_rlc() {
     gtk_box_pack_start(GTK_BOX(vbox), label_C, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), entry_C, FALSE, FALSE, 5);
 
-    GtkWidget *label_L = gtk_label_new("Inductancia (H):");
-    gtk_misc_set_alignment(GTK_MISC(label_L), 0, 0.5);
-    entry_L = gtk_entry_new();
-	gtk_widget_modify_text(entry_L, GTK_STATE_NORMAL, &color_negro);
-    gtk_box_pack_start(GTK_BOX(vbox), label_L, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), entry_L, FALSE, FALSE, 5);
+    GtkWidget *label_fc = gtk_label_new("Frecuencia de Corte:");
+    gtk_misc_set_alignment(GTK_MISC(label_fc), 0, 0.5);
+    entry_fc = gtk_entry_new();
+	gtk_widget_modify_text(entry_fc, GTK_STATE_NORMAL, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), label_fc, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), entry_fc, FALSE, FALSE, 5);
 
     GtkWidget *label_result = gtk_label_new("Resultados:");
     gtk_misc_set_alignment(GTK_MISC(label_result), 0, 0.5);

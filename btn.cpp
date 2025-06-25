@@ -144,7 +144,7 @@ void on_ok_clicked_simular(GtkWidget *widget, gpointer user_data){
 
 void on_aceptar(GtkWidget *widget, gpointer data) { 
 
-	if (guardarDatosIng(entry_nombre, entry_correo, entry_id)) {
+	if (validarDatosIng(entry_nombre, entry_correo, entry_id)) {
         gtk_widget_hide(datos);
         ventana_menu();
     } else {
