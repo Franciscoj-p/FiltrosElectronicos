@@ -7,7 +7,7 @@
 #include <cmath>
 #include <vector>
 
-void mostrar_resultado(GtkWidget *textview_result, datosFiltro resultado) {
+void mostrar_resultado(GtkWidget *textview_result, datosFiltro resultado) {           
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview_result));
     std::string texto;
 
@@ -30,7 +30,7 @@ datosFiltro calcular_rc(GtkWidget *entry_R, GtkWidget *entry_C, GtkWidget *radio
     int r = std::atoi(gtk_entry_get_text(GTK_ENTRY(entry_R)));
     int c = std::atoi(gtk_entry_get_text(GTK_ENTRY(entry_C)));
     int l = 0;
-    std::string tipo_filtro;
+    std::string tipo_filtro; 
 
     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio_pasa_banda))) {
         tipo_filtro = "High-pass"; 

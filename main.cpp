@@ -8,6 +8,8 @@
 // ./main
 
 
+//falta guardar datos, simular, valirdar botones, guardar, buscar, editar, eliminar, mostrar info, mostrar registrados
+
 int main(int argc, char *argv[]) {
     gtk_init(&argc, &argv);
     ventana_main();

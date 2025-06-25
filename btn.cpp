@@ -64,26 +64,124 @@ void on_ok_clicked_guardar(GtkButton *button, gpointer user_data) {
 	gtk_widget_destroy(dialog); 
 }
 
+void on_ok_clicked_simular(GtkButton *button, gpointer user_data) {
+
+	GtkWidget *dialog = GTK_WIDGET(user_data); 
+
+	//hacer cosas de simular
+
+	gtk_widget_destroy(dialog); 
+}
+
 void on_aceptar(GtkWidget *widget, gpointer data) { 
 
-	guardarDatosIng(entry_nombre, entry_correo, entry_id);
-    gtk_widget_hide(datos);
-    ventana_menu(); 
+	if (guardarDatosIng(entry_nombre, entry_correo, entry_id)) {
+        gtk_widget_hide(datos);
+        ventana_menu();
+    } else {
+        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(datos), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, "Error al guardar los datos. Por favor, verifica que todos los campos estén llenos y que el correo sea válido.");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+    }
 }   
 
 void on_calcularRC(GtkWidget *widget, gpointer data) {
+
+    if (!validarEntradaNumerica(entry_R, "Resistencia") || 
+        !validarEntradaNumerica(entry_C, "Capacitancia") ||
+        !validarTexto(entry_nombre, "Nombre") ||
+        !validarTexto(entry_id, "ID")) 
+    {
+        GtkWidget *dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
+            "Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        return;
+    }
+
     datosFiltro resultado = calcular_rc(entry_R, entry_C, radio_pasa_banda, radio_rechaza_banda, entry_nombre, entry_id);
     mostrar_resultado(textview_result, resultado);
 }
 
 void on_calcularRL(GtkWidget *widget, gpointer data) {
+
+    if (!validarEntradaNumerica(entry_R, "Resistencia") || 
+        !validarEntradaNumerica(entry_L, "Inductancia") || 
+        !validarTexto(entry_nombre, "Nombre") ||
+        !validarTexto(entry_id, "ID")) 
+    {
+        GtkWidget *dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
+            "Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        return;
+    }
+
     datosFiltro resultado = calcular_rl(entry_R, entry_L, radio_pasa_banda, radio_rechaza_banda, entry_nombre, entry_id);
     mostrar_resultado(textview_result, resultado);
 }
 
 void on_calcularRLC(GtkWidget *widget, gpointer data) {
+
+    if (!validarEntradaNumerica(entry_R, "Resistencia") || 
+        !validarEntradaNumerica(entry_L, "Inductancia") || 
+        !validarEntradaNumerica(entry_C, "Capacitancia") ||
+        !validarTexto(entry_nombre, "Nombre") ||
+        !validarTexto(entry_id, "ID")) 
+    {
+        GtkWidget *dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
+            "Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        return;
+    }
+
     datosFiltro resultado = calcular_rlc(entry_R, entry_L, entry_C, radio_pasa_banda, radio_rechaza_banda, entry_nombre, entry_id);
     mostrar_resultado(textview_result, resultado);
+}
+
+void on_simular(GtkWidget *widget, gpointer data) {
+    GtkWidget *dialog, *content_area;
+    GtkWidget *label, *entry_simular;
+    GtkWidget *vbox;
+    GtkWidget *window = gtk_widget_get_toplevel(widget);
+
+    dialog = gtk_dialog_new();
+    gtk_window_set_title(GTK_WINDOW(dialog), "Simular");
+    gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
+    gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(window));
+
+    content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+    vbox = gtk_vbox_new(FALSE, 5);
+
+    label = gtk_label_new("Nombre del diseño:");
+    entry_simular = gtk_entry_new();
+    gtk_widget_modify_text(entry_simular, GTK_STATE_NORMAL, &color_negro);
+
+    gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), entry_simular, FALSE, FALSE, 0);
+    gtk_container_add(GTK_CONTAINER(content_area), vbox);
+
+    GtkWidget *ok_button = gtk_button_new_with_label("Simular");
+	GtkWidget *ok_label = gtk_bin_get_child(GTK_BIN(ok_button));
+	gtk_widget_modify_fg(ok_label, GTK_STATE_NORMAL, &color_negro);
+	gtk_widget_modify_fg(ok_label, GTK_STATE_PRELIGHT, &color_negro);
+	g_signal_connect(ok_button, "clicked", G_CALLBACK(on_ok_clicked_simular), dialog);
+	
+    GtkWidget *cancel_button = gtk_button_new_with_label("Cancelar");
+	GtkWidget *cancel_label = gtk_bin_get_child(GTK_BIN(cancel_button));
+	gtk_widget_modify_fg(cancel_label, GTK_STATE_NORMAL, &color_negro);
+	gtk_widget_modify_fg(cancel_label, GTK_STATE_PRELIGHT, &color_negro);
+	g_signal_connect(cancel_button, "clicked", G_CALLBACK(on_cancel_clicked), dialog);
+
+    GtkWidget *action_area = gtk_dialog_get_action_area(GTK_DIALOG(dialog));
+    gtk_box_pack_start(GTK_BOX(action_area), ok_button, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(action_area), cancel_button, TRUE, TRUE, 0);
+
+    gtk_widget_show_all(dialog);
+
+    gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
 }
 
 void on_guardar(GtkWidget *widget, gpointer data) {
@@ -120,7 +218,6 @@ void on_guardar(GtkWidget *widget, gpointer data) {
 	gtk_widget_modify_fg(cancel_label, GTK_STATE_PRELIGHT, &color_negro);
 	g_signal_connect(cancel_button, "clicked", G_CALLBACK(on_cancel_clicked), dialog);
 
-    // Añadir botones al área de acción
     GtkWidget *action_area = gtk_dialog_get_action_area(GTK_DIALOG(dialog));
     gtk_box_pack_start(GTK_BOX(action_area), ok_button, TRUE, TRUE, 0);
     gtk_box_pack_start(GTK_BOX(action_area), cancel_button, TRUE, TRUE, 0);

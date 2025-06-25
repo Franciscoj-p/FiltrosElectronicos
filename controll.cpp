@@ -186,11 +186,11 @@ void ventana_diseñar() {
     g_signal_connect(button_rlc, "clicked", G_CALLBACK(on_rlc_button), NULL);
 
     GtkWidget *button = gtk_button_new_with_label("Regresar");
-        GtkWidget *label = gtk_bin_get_child(GTK_BIN(button));
-        gtk_widget_modify_fg(label, GTK_STATE_NORMAL, &color_negro);
-        gtk_widget_modify_fg(label, GTK_STATE_PRELIGHT, &color_negro);
-        gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 5);
-        g_signal_connect(button, "clicked", G_CALLBACK(on_regresar), NULL);
+    GtkWidget *label = gtk_bin_get_child(GTK_BIN(button));
+    gtk_widget_modify_fg(label, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_modify_fg(label, GTK_STATE_PRELIGHT, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 5);
+    g_signal_connect(button, "clicked", G_CALLBACK(on_regresar), NULL);
 
     gtk_widget_show_all(diseñar);
 }
@@ -231,12 +231,12 @@ void ventana_mostrar() {
     };
 
     for (int i = 0; i < 4; i++) {   //bucle para crear botones
-        GtkWidget *button = gtk_button_new_with_label(opciones[i]);
-        GtkWidget *label = gtk_bin_get_child(GTK_BIN(button));
-        gtk_widget_modify_fg(label, GTK_STATE_NORMAL, &color_negro);
-        gtk_widget_modify_fg(label, GTK_STATE_PRELIGHT, &color_negro);
-        gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 5);
-        g_signal_connect(button, "clicked", funciones[i], NULL);
+    GtkWidget *button = gtk_button_new_with_label(opciones[i]);
+    GtkWidget *label = gtk_bin_get_child(GTK_BIN(button));
+    gtk_widget_modify_fg(label, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_modify_fg(label, GTK_STATE_PRELIGHT, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 5);
+    g_signal_connect(button, "clicked", funciones[i], NULL);
     }
 
     gtk_widget_show_all(mostrar);
@@ -275,11 +275,11 @@ void ventana_info() {
 
 
     GtkWidget *button = gtk_button_new_with_label("Regresar");
-        GtkWidget *label = gtk_bin_get_child(GTK_BIN(button));
-        gtk_widget_modify_fg(label, GTK_STATE_NORMAL, &color_negro);
-        gtk_widget_modify_fg(label, GTK_STATE_PRELIGHT, &color_negro);
-        gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 5);
-        g_signal_connect(button, "clicked", G_CALLBACK(on_regresar), NULL);
+    GtkWidget *label = gtk_bin_get_child(GTK_BIN(button));
+    gtk_widget_modify_fg(label, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_modify_fg(label, GTK_STATE_PRELIGHT, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 5);
+    g_signal_connect(button, "clicked", G_CALLBACK(on_regresar), NULL);
 
     gtk_widget_show_all(info);
 }
@@ -299,13 +299,11 @@ void ventana_rc() {
     gtk_misc_set_alignment(GTK_MISC(label_msg), 0.5, 0.5);
     gtk_box_pack_start(GTK_BOX(vbox), label_msg, FALSE, FALSE, 10);
 
-    // Select
     radio_pasa_banda = gtk_radio_button_new_with_label(NULL, "Pasa altas (Low-pass)");
     radio_rechaza_banda = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio_pasa_banda), "Pasa bajas (Low-pass)");
     gtk_box_pack_start(GTK_BOX(vbox), radio_pasa_banda, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), radio_rechaza_banda, FALSE, FALSE, 0);
 
-    // Entries
     GtkWidget *label_R = gtk_label_new("Resistencia (Ohm):");
     gtk_misc_set_alignment(GTK_MISC(label_R), 0, 0.5);  
     entry_R = gtk_entry_new();
@@ -320,7 +318,6 @@ void ventana_rc() {
     gtk_box_pack_start(GTK_BOX(vbox), label_C, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), entry_C, FALSE, FALSE, 5);
 
-    // Label resultados
     GtkWidget *label_result = gtk_label_new("Resultados:");
     gtk_misc_set_alignment(GTK_MISC(label_result), 0, 0.5);
     textview_result = gtk_text_view_new();
@@ -332,13 +329,19 @@ void ventana_rc() {
     gtk_box_pack_start(GTK_BOX(vbox), label_result, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), textview_result, FALSE, FALSE, 5);
 
-    // Botón calcular
     GtkWidget *btn_calcular = gtk_button_new_with_label("Calcular");
     GtkWidget *label_calcular = gtk_bin_get_child(GTK_BIN(btn_calcular));
     gtk_widget_modify_fg(label_calcular, GTK_STATE_NORMAL, &color_negro);
     gtk_widget_modify_fg(label_calcular, GTK_STATE_PRELIGHT, &color_negro);
     gtk_box_pack_start(GTK_BOX(vbox), btn_calcular, FALSE, FALSE, 10);
     g_signal_connect(btn_calcular, "clicked", G_CALLBACK(on_calcularRC), NULL);
+
+    GtkWidget *btn_simular = gtk_button_new_with_label("Simular");
+    GtkWidget *label_simular = gtk_bin_get_child(GTK_BIN(btn_simular));
+    gtk_widget_modify_fg(label_simular, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_modify_fg(label_simular, GTK_STATE_PRELIGHT, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), btn_simular, FALSE, FALSE, 10);
+    g_signal_connect(btn_simular, "clicked", G_CALLBACK(on_simular), NULL);
 
     GtkWidget *btn_guardar = gtk_button_new_with_label("Guardar");
     GtkWidget *label_guardar = gtk_bin_get_child(GTK_BIN(btn_guardar));
@@ -372,13 +375,11 @@ void ventana_rl() {
     gtk_misc_set_alignment(GTK_MISC(label_msg), 0.5, 0.5);
     gtk_box_pack_start(GTK_BOX(vbox), label_msg, FALSE, FALSE, 10);
 
-    // Select
     radio_pasa_banda = gtk_radio_button_new_with_label(NULL, "Pasa altas (Low-pass)");
     radio_rechaza_banda = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio_pasa_banda), "Pasa bajas (Low-pass)");
     gtk_box_pack_start(GTK_BOX(vbox), radio_pasa_banda, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), radio_rechaza_banda, FALSE, FALSE, 0);
 
-    // Entries
     GtkWidget *label_R = gtk_label_new("Resistencia (Ohm):");
     gtk_misc_set_alignment(GTK_MISC(label_R), 0, 0.5);  
     entry_R = gtk_entry_new();
@@ -393,7 +394,6 @@ void ventana_rl() {
     gtk_box_pack_start(GTK_BOX(vbox), label_L, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), entry_L, FALSE, FALSE, 5);
 
-    // Label resultados
     GtkWidget *label_result = gtk_label_new("Resultados:");
     gtk_misc_set_alignment(GTK_MISC(label_result), 0, 0.5);
     textview_result = gtk_text_view_new();
@@ -405,13 +405,19 @@ void ventana_rl() {
     gtk_box_pack_start(GTK_BOX(vbox), label_result, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), textview_result, FALSE, FALSE, 5);
 
-    // Botón calcular
     GtkWidget *btn_calcular = gtk_button_new_with_label("Calcular");
     GtkWidget *label_calcular = gtk_bin_get_child(GTK_BIN(btn_calcular));
     gtk_widget_modify_fg(label_calcular, GTK_STATE_NORMAL, &color_negro);
     gtk_widget_modify_fg(label_calcular, GTK_STATE_PRELIGHT, &color_negro);
     gtk_box_pack_start(GTK_BOX(vbox), btn_calcular, FALSE, FALSE, 10);
     g_signal_connect(btn_calcular, "clicked", G_CALLBACK(on_calcularRL), NULL);
+
+    GtkWidget *btn_simular = gtk_button_new_with_label("Simular");
+    GtkWidget *label_simular = gtk_bin_get_child(GTK_BIN(btn_simular));
+    gtk_widget_modify_fg(label_simular, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_modify_fg(label_simular, GTK_STATE_PRELIGHT, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), btn_simular, FALSE, FALSE, 10);
+    g_signal_connect(btn_simular, "clicked", G_CALLBACK(on_simular), NULL);
 
     GtkWidget *btn_guardar = gtk_button_new_with_label("Guardar");
     GtkWidget *label_guardar = gtk_bin_get_child(GTK_BIN(btn_guardar));
@@ -445,13 +451,11 @@ void ventana_rlc() {
     gtk_misc_set_alignment(GTK_MISC(label_msg), 0.5, 0.5);
     gtk_box_pack_start(GTK_BOX(vbox), label_msg, FALSE, FALSE, 10);
 
-    // Select
     radio_pasa_banda = gtk_radio_button_new_with_label(NULL, "Pasa banda (Band-pass)");
     radio_rechaza_banda = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio_pasa_banda), "Rechaza banda (Notch)");
     gtk_box_pack_start(GTK_BOX(vbox), radio_pasa_banda, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), radio_rechaza_banda, FALSE, FALSE, 0);
 
-    // Entries
     GtkWidget *label_R = gtk_label_new("Resistencia (Ohm):");
     gtk_misc_set_alignment(GTK_MISC(label_R), 0, 0.5);  
     entry_R = gtk_entry_new();
@@ -473,7 +477,6 @@ void ventana_rlc() {
     gtk_box_pack_start(GTK_BOX(vbox), label_L, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), entry_L, FALSE, FALSE, 5);
 
-    // Label resultados
     GtkWidget *label_result = gtk_label_new("Resultados:");
     gtk_misc_set_alignment(GTK_MISC(label_result), 0, 0.5);
     textview_result = gtk_text_view_new();
@@ -485,13 +488,19 @@ void ventana_rlc() {
     gtk_box_pack_start(GTK_BOX(vbox), label_result, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), textview_result, FALSE, FALSE, 5);
 
-    // Botón calcular
     GtkWidget *btn_calcular = gtk_button_new_with_label("Calcular");
     GtkWidget *label_calcular = gtk_bin_get_child(GTK_BIN(btn_calcular));
     gtk_widget_modify_fg(label_calcular, GTK_STATE_NORMAL, &color_negro);
     gtk_widget_modify_fg(label_calcular, GTK_STATE_PRELIGHT, &color_negro);
     gtk_box_pack_start(GTK_BOX(vbox), btn_calcular, FALSE, FALSE, 10);
     g_signal_connect(btn_calcular, "clicked", G_CALLBACK(on_calcularRLC), NULL);
+
+    GtkWidget *btn_simular = gtk_button_new_with_label("Simular");
+    GtkWidget *label_simular = gtk_bin_get_child(GTK_BIN(btn_simular));
+    gtk_widget_modify_fg(label_simular, GTK_STATE_NORMAL, &color_negro);
+    gtk_widget_modify_fg(label_simular, GTK_STATE_PRELIGHT, &color_negro);
+    gtk_box_pack_start(GTK_BOX(vbox), btn_simular, FALSE, FALSE, 10);
+    g_signal_connect(btn_simular, "clicked", G_CALLBACK(on_simular), NULL);
 
     GtkWidget *btn_guardar = gtk_button_new_with_label("Guardar");
     GtkWidget *label_guardar = gtk_bin_get_child(GTK_BIN(btn_guardar));
