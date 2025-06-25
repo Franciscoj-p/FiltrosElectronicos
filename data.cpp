@@ -67,7 +67,7 @@ bool validarTexto(GtkWidget *entry, const char *nombreCampo) {
     return true;
 }
 
-bool guardarDatosIng(GtkWidget *entry_nombre, GtkWidget *entry_correo, GtkWidget *entry_id) {
+datosIngeniero guardarDatosIng(GtkWidget *entry_nombre, GtkWidget *entry_correo, GtkWidget *entry_id) {
     const char *nombre = gtk_entry_get_text(GTK_ENTRY(entry_nombre));
     const char *correo = gtk_entry_get_text(GTK_ENTRY(entry_correo));
     const char *id     = gtk_entry_get_text(GTK_ENTRY(entry_id));
@@ -85,5 +85,11 @@ bool guardarDatosIng(GtkWidget *entry_nombre, GtkWidget *entry_correo, GtkWidget
     std::cout << "Nombre: " << nombre << std::endl;
     std::cout << "Correo: " << correo << std::endl;
     std::cout << "ID: " << id << std::endl;
-    return true;
+
+    datosIngeniero ing;
+    ing.nombre = nombre;
+    ing.correo = correo;
+    ing.id     = id;
+
+    return ing;
 }
