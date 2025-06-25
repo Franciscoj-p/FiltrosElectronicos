@@ -5,6 +5,9 @@
 #include <gtk/gtk.h>
 
 GtkWidget *entry_guardar;
+datosIngeniero inge;     
+datosFiltro filtro;
+
 
 void on_ingresar(GtkWidget *widget, gpointer data) { gtk_widget_hide(win1); ventana_datos(); }
 
@@ -68,7 +71,7 @@ void on_ok_clicked_guardar(GtkButton *button, gpointer user_data) {
 
         if (datos->tipo_filtro == "RC") {
             if (!validarEntradaNumerica(entry_R, "Resistencia") || 
-            !validarEntradaNumerica(entry_C, "Capacitancia") ||
+            !validarEntradaNumerica(entry_fc, "Frecuencia de Corte") ||
             !validarTexto(entry_nombre, "Nombre") ||
             !validarTexto(entry_id, "ID")) 
         {
@@ -78,7 +81,7 @@ void on_ok_clicked_guardar(GtkButton *button, gpointer user_data) {
         }
         else if (datos->tipo_filtro == "RL") {
             if (!validarEntradaNumerica(entry_R, "Resistencia") || 
-            !validarEntradaNumerica(entry_L, "Inductancia") || 
+            !validarEntradaNumerica(entry_fc, "Frecuencia de Corte") || 
             !validarTexto(entry_nombre, "Nombre") ||
             !validarTexto(entry_id, "ID")) 
         {
@@ -88,7 +91,7 @@ void on_ok_clicked_guardar(GtkButton *button, gpointer user_data) {
         }
         else if (datos->tipo_filtro == "RLC") {
             if (!validarEntradaNumerica(entry_R, "Resistencia") || 
-            !validarEntradaNumerica(entry_L, "Inductancia") || 
+            !validarEntradaNumerica(entry_fc, "Frecuencia de Corte") || 
             !validarEntradaNumerica(entry_C, "Capacitancia") ||
             !validarTexto(entry_nombre, "Nombre") ||
             !validarTexto(entry_id, "ID")) 
@@ -97,6 +100,9 @@ void on_ok_clicked_guardar(GtkButton *button, gpointer user_data) {
             return;
         }
         }
+        guardarDiseño(filtro, inge, nombre_diseño);
+        gtk_widget_destroy(datos->dialogo);
+
 }
 
 void on_ok_clicked_simular(GtkWidget *widget, gpointer user_data){
@@ -111,7 +117,7 @@ void on_ok_clicked_simular(GtkWidget *widget, gpointer user_data){
 
         if (datos->tipo_filtro == "RC") {
             if (!validarEntradaNumerica(entry_R, "Resistencia") || 
-            !validarEntradaNumerica(entry_C, "Capacitancia") ||
+            !validarEntradaNumerica(entry_fc, "Frecuencia de Corte") ||
             !validarTexto(entry_nombre, "Nombre") ||
             !validarTexto(entry_id, "ID")) 
         {
@@ -121,7 +127,7 @@ void on_ok_clicked_simular(GtkWidget *widget, gpointer user_data){
         }
         else if (datos->tipo_filtro == "RL") {
             if (!validarEntradaNumerica(entry_R, "Resistencia") || 
-            !validarEntradaNumerica(entry_L, "Inductancia") || 
+            !validarEntradaNumerica(entry_fc, "Frecuencia de Corte") || 
             !validarTexto(entry_nombre, "Nombre") ||
             !validarTexto(entry_id, "ID")) 
         {
@@ -131,7 +137,7 @@ void on_ok_clicked_simular(GtkWidget *widget, gpointer user_data){
         }
         else if (datos->tipo_filtro == "RLC") {
             if (!validarEntradaNumerica(entry_R, "Resistencia") || 
-            !validarEntradaNumerica(entry_L, "Inductancia") || 
+            !validarEntradaNumerica(entry_fc, "Frecuencia de Corte") || 
             !validarEntradaNumerica(entry_C, "Capacitancia") ||
             !validarTexto(entry_nombre, "Nombre") ||
             !validarTexto(entry_id, "ID")) 
@@ -145,6 +151,7 @@ void on_ok_clicked_simular(GtkWidget *widget, gpointer user_data){
 void on_aceptar(GtkWidget *widget, gpointer data) { 
 
 	if (validarDatosIng(entry_nombre, entry_correo, entry_id)) {
+        inge = guardarDatosIng(entry_nombre, entry_correo, entry_id);
         gtk_widget_hide(datos);
         ventana_menu();
     } else {
@@ -155,7 +162,7 @@ void on_aceptar(GtkWidget *widget, gpointer data) {
 void on_calcularRC(GtkWidget *widget, gpointer data) {
 
     if (!validarEntradaNumerica(entry_R, "Resistencia") || 
-        !validarEntradaNumerica(entry_C, "Capacitancia") ||
+        !validarEntradaNumerica(entry_fc, "Frecuencia de Corte") ||
         !validarTexto(entry_nombre, "Nombre") ||
         !validarTexto(entry_id, "ID")) 
     {
@@ -163,14 +170,14 @@ void on_calcularRC(GtkWidget *widget, gpointer data) {
         return;
     }
 
-    datosFiltro resultado = calcular_rc(entry_R, entry_C, radio_pasa_banda, radio_rechaza_banda, entry_nombre, entry_id);
-    mostrar_resultado(textview_result, resultado);
+    filtro = calcular_rc(entry_R, entry_fc, radio_pasa_banda, radio_rechaza_banda, entry_nombre);
+    mostrar_resultado(textview_result, filtro);
 }
 
 void on_calcularRL(GtkWidget *widget, gpointer data) {
 
     if (!validarEntradaNumerica(entry_R, "Resistencia") || 
-        !validarEntradaNumerica(entry_L, "Inductancia") || 
+        !validarEntradaNumerica(entry_fc, "Frecuencia de Corte") || 
         !validarTexto(entry_nombre, "Nombre") ||
         !validarTexto(entry_id, "ID")) 
     {
@@ -178,14 +185,14 @@ void on_calcularRL(GtkWidget *widget, gpointer data) {
         return;
     }
 
-    datosFiltro resultado = calcular_rl(entry_R, entry_L, radio_pasa_banda, radio_rechaza_banda, entry_nombre, entry_id);
-    mostrar_resultado(textview_result, resultado);
+    filtro = calcular_rl(entry_R, entry_fc, radio_pasa_banda, radio_rechaza_banda, entry_nombre);
+    mostrar_resultado(textview_result, filtro);
 }
 
 void on_calcularRLC(GtkWidget *widget, gpointer data) {
 
     if (!validarEntradaNumerica(entry_R, "Resistencia") || 
-        !validarEntradaNumerica(entry_L, "Inductancia") || 
+        !validarEntradaNumerica(entry_fc, "Frecuencia de Corte") || 
         !validarEntradaNumerica(entry_C, "Capacitancia") ||
         !validarTexto(entry_nombre, "Nombre") ||
         !validarTexto(entry_id, "ID")) 
@@ -194,8 +201,8 @@ void on_calcularRLC(GtkWidget *widget, gpointer data) {
         return;
     }
 
-    datosFiltro resultado = calcular_rlc(entry_R, entry_L, entry_C, radio_pasa_banda, radio_rechaza_banda, entry_nombre, entry_id);
-    mostrar_resultado(textview_result, resultado);
+    filtro = calcular_rlc(entry_R, entry_fc, entry_C, radio_pasa_banda, radio_rechaza_banda, entry_nombre);
+    mostrar_resultado(textview_result, filtro);
 }
 
 void on_simular(GtkWidget *widget, gpointer data) {

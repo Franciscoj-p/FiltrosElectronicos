@@ -19,7 +19,7 @@ extern GtkWidget *entry_id;
 extern GtkWidget *combo_tipo;
 extern GtkWidget *entry_R;
 extern GtkWidget *entry_C;
-extern GtkWidget *entry_L;
+extern GtkWidget *entry_fc;
 extern GtkWidget *textview_result;
 extern GtkWidget *radio_pasa_banda;
 extern GtkWidget *radio_rechaza_banda;

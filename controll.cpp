@@ -19,7 +19,7 @@ GtkWidget *rlc;
 GtkWidget *combo_tipo;
 GtkWidget *entry_R;
 GtkWidget *entry_C;
-GtkWidget *entry_L;
+GtkWidget *entry_fc;
 GtkWidget *textview_result;
 GtkWidget *radio_pasa_banda;
 GtkWidget *radio_rechaza_banda;
@@ -299,7 +299,7 @@ void ventana_rc() {
     gtk_misc_set_alignment(GTK_MISC(label_msg), 0.5, 0.5);
     gtk_box_pack_start(GTK_BOX(vbox), label_msg, FALSE, FALSE, 10);
 
-    radio_pasa_banda = gtk_radio_button_new_with_label(NULL, "Pasa altas (Low-pass)");
+    radio_pasa_banda = gtk_radio_button_new_with_label(NULL, "Pasa altas (High-pass)");
     radio_rechaza_banda = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio_pasa_banda), "Pasa bajas (Low-pass)");
     gtk_box_pack_start(GTK_BOX(vbox), radio_pasa_banda, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), radio_rechaza_banda, FALSE, FALSE, 0);
@@ -311,7 +311,7 @@ void ventana_rc() {
     gtk_box_pack_start(GTK_BOX(vbox), label_R, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), entry_R, FALSE, FALSE, 5);
 
-    GtkWidget *label_fc = gtk_label_new("Frecuencia de Corte:");
+    GtkWidget *label_fc = gtk_label_new("Frecuencia de Corte (Hz):");
     gtk_misc_set_alignment(GTK_MISC(label_fc), 0, 0.5);
     entry_fc = gtk_entry_new();
 	gtk_widget_modify_text(entry_fc, GTK_STATE_NORMAL, &color_negro);
@@ -325,9 +325,13 @@ void ventana_rc() {
     gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(textview_result), FALSE);
     gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(textview_result), GTK_WRAP_WORD);
     gtk_widget_modify_text(textview_result, GTK_STATE_NORMAL, &color_negro);
-    gtk_widget_set_size_request(textview_result, -1, 100);
+    GtkWidget *scroll_result = gtk_scrolled_window_new(NULL, NULL);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll_result),
+                                   GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+    gtk_widget_set_size_request(scroll_result, -1, 100);
+    gtk_container_add(GTK_CONTAINER(scroll_result), textview_result);
     gtk_box_pack_start(GTK_BOX(vbox), label_result, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), textview_result, FALSE, FALSE, 5);
+    gtk_box_pack_start(GTK_BOX(vbox), scroll_result, FALSE, FALSE, 5);
 
     GtkWidget *btn_calcular = gtk_button_new_with_label("Calcular");
     GtkWidget *label_calcular = gtk_bin_get_child(GTK_BIN(btn_calcular));
@@ -375,7 +379,7 @@ void ventana_rl() {
     gtk_misc_set_alignment(GTK_MISC(label_msg), 0.5, 0.5);
     gtk_box_pack_start(GTK_BOX(vbox), label_msg, FALSE, FALSE, 10);
 
-    radio_pasa_banda = gtk_radio_button_new_with_label(NULL, "Pasa altas (Low-pass)");
+    radio_pasa_banda = gtk_radio_button_new_with_label(NULL, "Pasa altas (High-pass)");
     radio_rechaza_banda = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio_pasa_banda), "Pasa bajas (Low-pass)");
     gtk_box_pack_start(GTK_BOX(vbox), radio_pasa_banda, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), radio_rechaza_banda, FALSE, FALSE, 0);
@@ -387,7 +391,7 @@ void ventana_rl() {
     gtk_box_pack_start(GTK_BOX(vbox), label_R, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), entry_R, FALSE, FALSE, 5);
 
-    GtkWidget *label_fc = gtk_label_new("Frecuencia de Corte:");
+    GtkWidget *label_fc = gtk_label_new("Frecuencia de Corte (Hz):");
     gtk_misc_set_alignment(GTK_MISC(label_fc), 0, 0.5);
     entry_fc = gtk_entry_new();
 	gtk_widget_modify_text(entry_fc, GTK_STATE_NORMAL, &color_negro);
@@ -401,9 +405,13 @@ void ventana_rl() {
     gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(textview_result), FALSE);
     gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(textview_result), GTK_WRAP_WORD);
     gtk_widget_modify_text(textview_result, GTK_STATE_NORMAL, &color_negro);
-    gtk_widget_set_size_request(textview_result, -1, 100);
+    GtkWidget *scroll_result = gtk_scrolled_window_new(NULL, NULL);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll_result),
+                                   GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+    gtk_widget_set_size_request(scroll_result, -1, 100);
+    gtk_container_add(GTK_CONTAINER(scroll_result), textview_result);
     gtk_box_pack_start(GTK_BOX(vbox), label_result, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), textview_result, FALSE, FALSE, 5);
+    gtk_box_pack_start(GTK_BOX(vbox), scroll_result, FALSE, FALSE, 5);
 
     GtkWidget *btn_calcular = gtk_button_new_with_label("Calcular");
     GtkWidget *label_calcular = gtk_bin_get_child(GTK_BIN(btn_calcular));
@@ -470,7 +478,7 @@ void ventana_rlc() {
     gtk_box_pack_start(GTK_BOX(vbox), label_C, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), entry_C, FALSE, FALSE, 5);
 
-    GtkWidget *label_fc = gtk_label_new("Frecuencia de Corte:");
+    GtkWidget *label_fc = gtk_label_new("Frecuencia de Corte (Hz):");
     gtk_misc_set_alignment(GTK_MISC(label_fc), 0, 0.5);
     entry_fc = gtk_entry_new();
 	gtk_widget_modify_text(entry_fc, GTK_STATE_NORMAL, &color_negro);
@@ -484,9 +492,13 @@ void ventana_rlc() {
     gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(textview_result), FALSE);
     gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(textview_result), GTK_WRAP_WORD);
     gtk_widget_modify_text(textview_result, GTK_STATE_NORMAL, &color_negro);
-    gtk_widget_set_size_request(textview_result, -1, 100);
+    GtkWidget *scroll_result = gtk_scrolled_window_new(NULL, NULL);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll_result),
+                                   GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+    gtk_widget_set_size_request(scroll_result, -1, 100);
+    gtk_container_add(GTK_CONTAINER(scroll_result), textview_result);
     gtk_box_pack_start(GTK_BOX(vbox), label_result, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), textview_result, FALSE, FALSE, 5);
+    gtk_box_pack_start(GTK_BOX(vbox), scroll_result, FALSE, FALSE, 5);
 
     GtkWidget *btn_calcular = gtk_button_new_with_label("Calcular");
     GtkWidget *label_calcular = gtk_bin_get_child(GTK_BIN(btn_calcular));
