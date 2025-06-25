@@ -57,20 +57,89 @@ void on_ok_clicked_edit(GtkButton *button, gpointer user_data) {
 
 void on_ok_clicked_guardar(GtkButton *button, gpointer user_data) {
 
-	GtkWidget *dialog = GTK_WIDGET(user_data); 
+	DatosSimulacion *datos = (DatosSimulacion *)user_data;
 
-	//hacer cosas de guardar
+        const char *nombre_diseño = gtk_entry_get_text(GTK_ENTRY(datos->entry_nombre_diseño));
 
-	gtk_widget_destroy(dialog); 
+        if (strlen(nombre_diseño) == 0) {
+            mostrar_error("Por favor ingresa un nombre para el diseño.");
+            return;
+        }
+
+        if (datos->tipo_filtro == "RC") {
+            if (!validarEntradaNumerica(entry_R, "Resistencia") || 
+            !validarEntradaNumerica(entry_C, "Capacitancia") ||
+            !validarTexto(entry_nombre, "Nombre") ||
+            !validarTexto(entry_id, "ID")) 
+        {
+            mostrar_error("Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
+            return;
+        }
+        }
+        else if (datos->tipo_filtro == "RL") {
+            if (!validarEntradaNumerica(entry_R, "Resistencia") || 
+            !validarEntradaNumerica(entry_L, "Inductancia") || 
+            !validarTexto(entry_nombre, "Nombre") ||
+            !validarTexto(entry_id, "ID")) 
+        {
+             mostrar_error("Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
+            return;
+        }
+        }
+        else if (datos->tipo_filtro == "RLC") {
+            if (!validarEntradaNumerica(entry_R, "Resistencia") || 
+            !validarEntradaNumerica(entry_L, "Inductancia") || 
+            !validarEntradaNumerica(entry_C, "Capacitancia") ||
+            !validarTexto(entry_nombre, "Nombre") ||
+            !validarTexto(entry_id, "ID")) 
+        {
+            mostrar_error("Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
+            return;
+        }
+        }
 }
 
-void on_ok_clicked_simular(GtkButton *button, gpointer user_data) {
+void on_ok_clicked_simular(GtkWidget *widget, gpointer user_data){
+    DatosSimulacion *datos = (DatosSimulacion *)user_data;
 
-	GtkWidget *dialog = GTK_WIDGET(user_data); 
+        const char *nombre_diseño = gtk_entry_get_text(GTK_ENTRY(datos->entry_nombre_diseño));
 
-	//hacer cosas de simular
+        if (strlen(nombre_diseño) == 0) {
+            mostrar_error("Por favor ingresa un nombre para el diseño.");
+            return;
+        }
 
-	gtk_widget_destroy(dialog); 
+        if (datos->tipo_filtro == "RC") {
+            if (!validarEntradaNumerica(entry_R, "Resistencia") || 
+            !validarEntradaNumerica(entry_C, "Capacitancia") ||
+            !validarTexto(entry_nombre, "Nombre") ||
+            !validarTexto(entry_id, "ID")) 
+        {
+            mostrar_error("Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
+            return;
+        }
+        }
+        else if (datos->tipo_filtro == "RL") {
+            if (!validarEntradaNumerica(entry_R, "Resistencia") || 
+            !validarEntradaNumerica(entry_L, "Inductancia") || 
+            !validarTexto(entry_nombre, "Nombre") ||
+            !validarTexto(entry_id, "ID")) 
+        {
+             mostrar_error("Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
+            return;
+        }
+        }
+        else if (datos->tipo_filtro == "RLC") {
+            if (!validarEntradaNumerica(entry_R, "Resistencia") || 
+            !validarEntradaNumerica(entry_L, "Inductancia") || 
+            !validarEntradaNumerica(entry_C, "Capacitancia") ||
+            !validarTexto(entry_nombre, "Nombre") ||
+            !validarTexto(entry_id, "ID")) 
+        {
+            mostrar_error("Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
+            return;
+        }
+        }
 }
 
 void on_aceptar(GtkWidget *widget, gpointer data) { 
@@ -79,9 +148,7 @@ void on_aceptar(GtkWidget *widget, gpointer data) {
         gtk_widget_hide(datos);
         ventana_menu();
     } else {
-        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(datos), GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, "Error al guardar los datos. Por favor, verifica que todos los campos estén llenos y que el correo sea válido.");
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
+         mostrar_error("Error al guardar los datos. Por favor, verifica que todos los campos estén llenos y que el correo sea válido.");
     }
 }   
 
@@ -92,10 +159,7 @@ void on_calcularRC(GtkWidget *widget, gpointer data) {
         !validarTexto(entry_nombre, "Nombre") ||
         !validarTexto(entry_id, "ID")) 
     {
-        GtkWidget *dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-            "Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
+         mostrar_error("Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
         return;
     }
 
@@ -110,10 +174,7 @@ void on_calcularRL(GtkWidget *widget, gpointer data) {
         !validarTexto(entry_nombre, "Nombre") ||
         !validarTexto(entry_id, "ID")) 
     {
-        GtkWidget *dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-            "Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
+         mostrar_error("Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
         return;
     }
 
@@ -129,10 +190,7 @@ void on_calcularRLC(GtkWidget *widget, gpointer data) {
         !validarTexto(entry_nombre, "Nombre") ||
         !validarTexto(entry_id, "ID")) 
     {
-        GtkWidget *dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-            "Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
+         mostrar_error("Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
         return;
     }
 
@@ -141,6 +199,16 @@ void on_calcularRLC(GtkWidget *widget, gpointer data) {
 }
 
 void on_simular(GtkWidget *widget, gpointer data) {
+    
+    const char *tipo_filtro = "desconocido";
+
+    if (gtk_widget_get_visible(rc))
+        tipo_filtro = "RC";
+    else if (gtk_widget_get_visible(rl))
+        tipo_filtro = "RL";
+    else if (gtk_widget_get_visible(rlc))
+        tipo_filtro = "RLC";
+
     GtkWidget *dialog, *content_area;
     GtkWidget *label, *entry_simular;
     GtkWidget *vbox;
@@ -162,11 +230,16 @@ void on_simular(GtkWidget *widget, gpointer data) {
     gtk_box_pack_start(GTK_BOX(vbox), entry_simular, FALSE, FALSE, 0);
     gtk_container_add(GTK_CONTAINER(content_area), vbox);
 
+    DatosSimulacion *datos = new DatosSimulacion();
+    datos->dialogo = dialog;
+    datos->entry_nombre_diseño = entry_simular;
+    datos->tipo_filtro = tipo_filtro;
+
     GtkWidget *ok_button = gtk_button_new_with_label("Simular");
 	GtkWidget *ok_label = gtk_bin_get_child(GTK_BIN(ok_button));
 	gtk_widget_modify_fg(ok_label, GTK_STATE_NORMAL, &color_negro);
 	gtk_widget_modify_fg(ok_label, GTK_STATE_PRELIGHT, &color_negro);
-	g_signal_connect(ok_button, "clicked", G_CALLBACK(on_ok_clicked_simular), dialog);
+	g_signal_connect(ok_button, "clicked", G_CALLBACK(on_ok_clicked_simular), datos);
 	
     GtkWidget *cancel_button = gtk_button_new_with_label("Cancelar");
 	GtkWidget *cancel_label = gtk_bin_get_child(GTK_BIN(cancel_button));
@@ -185,6 +258,16 @@ void on_simular(GtkWidget *widget, gpointer data) {
 }
 
 void on_guardar(GtkWidget *widget, gpointer data) {
+
+    const char *tipo_filtro = "desconocido";
+
+    if (gtk_widget_get_visible(rc))
+        tipo_filtro = "RC";
+    else if (gtk_widget_get_visible(rl))
+        tipo_filtro = "RL";
+    else if (gtk_widget_get_visible(rlc))
+        tipo_filtro = "RLC";
+
     GtkWidget *dialog, *content_area;
     GtkWidget *label, *entry_guardar;
     GtkWidget *vbox;
@@ -206,11 +289,16 @@ void on_guardar(GtkWidget *widget, gpointer data) {
     gtk_box_pack_start(GTK_BOX(vbox), entry_guardar, FALSE, FALSE, 0);
     gtk_container_add(GTK_CONTAINER(content_area), vbox);
 
+    DatosSimulacion *datos = new DatosSimulacion();
+    datos->dialogo = dialog;
+    datos->entry_nombre_diseño = entry_guardar;
+    datos->tipo_filtro = tipo_filtro;
+
     GtkWidget *ok_button = gtk_button_new_with_label("Guardar");
 	GtkWidget *ok_label = gtk_bin_get_child(GTK_BIN(ok_button));
 	gtk_widget_modify_fg(ok_label, GTK_STATE_NORMAL, &color_negro);
 	gtk_widget_modify_fg(ok_label, GTK_STATE_PRELIGHT, &color_negro);
-	g_signal_connect(ok_button, "clicked", G_CALLBACK(on_ok_clicked_guardar), dialog);
+	g_signal_connect(ok_button, "clicked", G_CALLBACK(on_ok_clicked_guardar), datos);
 	
     GtkWidget *cancel_button = gtk_button_new_with_label("Cancelar");
 	GtkWidget *cancel_label = gtk_bin_get_child(GTK_BIN(cancel_button));
