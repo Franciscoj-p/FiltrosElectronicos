@@ -7,7 +7,7 @@
 //comando para compilar: g++ main.cpp controll.cpp data.cpp btn.cpp calc.cpp -o main `pkg-config --cflags --libs gtk+-2.0`
 // ./main
 
-//falta simular, guardar, mostrar, editar, buscar, eliminar
+//falta, guardar, mostrar(paginacion, orden por costo), editar, buscar, eliminar
 
 int main(int argc, char *argv[]) {
     gtk_init(&argc, &argv);
