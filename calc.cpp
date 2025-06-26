@@ -51,6 +51,34 @@ std::string to_str(double valor, int decimales = 2) {  //redondear a decimales
     return ss.str();
 }
 
+double costo_componente(double valor, std::string tipo) {
+    if (tipo == "R") {
+        return COSTO_RESISTENCIA;
+    } else if (tipo == "C") {
+        if (valor < 1e-7) return COSTO_CAP_BAJO;    // < 100nF
+        else if (valor < 1e-5) return COSTO_CAP_MEDIO; // < 10uF
+        else return COSTO_CAP_ALTO;
+    } else if (tipo == "L") {
+        if (valor < 1e-3) return COSTO_IND_BAJO;    // < 1mH
+        else if (valor < 1e-1) return COSTO_IND_MEDIO; // < 100mH
+        else return COSTO_IND_ALTO;
+    }
+
+    return 0.0;
+}
+
+
+double costo_total(const datosFiltro& filtro) {
+    double costo_total = 0.0;
+
+    if (filtro.r > 0) costo_total += costo_componente(filtro.r, "R");
+    if (filtro.c > 0) costo_total += costo_componente(filtro.c, "C");
+    if (filtro.l > 0) costo_total += costo_componente(filtro.l, "L");
+
+    return costo_total;
+}
+
+
 void mostrar_resultado(GtkWidget *textview_result, datosFiltro resultado) {
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview_result));
     std::string texto;
@@ -98,6 +126,7 @@ void mostrar_resultado(GtkWidget *textview_result, datosFiltro resultado) {
     texto += "Error de frecuencia de corte: " + to_str(resultado.err, 2) + "%\n";
     texto += "Ancho de banda: " + to_str(bw_k) + " kHz\n";
     texto += "Ganancia en fc: " + to_str(resultado.G, 3) + " (" + to_str(resultado.G_dB, 2) + " dB)\n";
+    texto += "Costo total del filtro: $" + to_str(resultado.costo, 2) + "\n";
 
     gtk_text_buffer_set_text(buffer, texto.c_str(), -1);
 }
@@ -194,6 +223,8 @@ datosFiltro calcular_rc(GtkWidget *entry_R, GtkWidget *entry_fc,
     resultado.Q = 0; // No aplica
     resultado.G = G;
     resultado.G_dB = G_dB;
+    resultado.costo = costo_total(resultado);
+
 
     return resultado;
 }
@@ -248,6 +279,7 @@ datosFiltro calcular_rl(GtkWidget *entry_R, GtkWidget *entry_fc,
     resultado.G = G;
     resultado.G_dB = G_dB;
     resultado.Q = 0; // no aplica 
+    resultado.costo = costo_total(resultado);
 
     return resultado;
 }
@@ -305,6 +337,7 @@ datosFiltro calcular_rlc(GtkWidget *entry_R, GtkWidget *entry_C, GtkWidget *entr
     resultado.Q = Q;
     resultado.G = G;
     resultado.G_dB = G_dB;
+    resultado.costo = costo_total(resultado);
 
     return resultado;
 }
