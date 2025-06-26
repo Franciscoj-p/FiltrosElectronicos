@@ -5,6 +5,9 @@
 #include <gtk/gtk.h>
 
 GtkWidget *entry_guardar;
+GtkWidget *entry_buscar;
+GtkWidget *entry_eliminar;
+GtkWidget *entry_editar;
 datosIngeniero inge;     
 datosFiltro filtro;
 
@@ -33,75 +36,89 @@ void on_cancel_clicked(GtkButton *button, gpointer user_data) { GtkWidget *dialo
 
 void on_ok_clicked_elimin(GtkButton *button, gpointer user_data) {
 
-	GtkWidget *dialog = GTK_WIDGET(user_data); 
-
-	//hacer cosas de eliminar
-
-	gtk_widget_destroy(dialog); 
+	DatosSimulacion *datos = (DatosSimulacion *)user_data;
+    std::string nombre_diseño = gtk_entry_get_text(GTK_ENTRY(datos->entry_nombre_diseño));
+	if(eliminarFiltroPorNombre(nombre_diseño)){
+        mostrar_error("Filtro eliminado exitosamente.");
+    } else {
+        mostrar_error("No se encontró un filtro con ese nombre.");
+    }
+    gtk_widget_destroy(datos->dialogo);
 }
 
 void on_ok_clicked_busc(GtkButton *button, gpointer user_data) {
 
-	GtkWidget *dialog = GTK_WIDGET(user_data); 
-
-	//hacer cosas de buscar
-
-	gtk_widget_destroy(dialog); 
+	DatosSimulacion *datos = (DatosSimulacion *)user_data;
+    std::string nombre_diseño = gtk_entry_get_text(GTK_ENTRY(datos->entry_nombre_diseño));
+    int pos = buscarFiltroPorNombre(nombre_diseño);
+    if (pos != -1) {
+        filtro = filtros[pos];
+        mostrar_resultado(textview_result, filtro);
+    } else {
+        mostrar_error("No se encontró un filtro con ese nombre.");
+    }
+    gtk_widget_destroy(datos->dialogo);
 }
 
 void on_ok_clicked_edit(GtkButton *button, gpointer user_data) {
 
-	GtkWidget *dialog = GTK_WIDGET(user_data); 
-
-	//hacer cosas de editar
-
-	gtk_widget_destroy(dialog); 
+	DatosSimulacion *datos = (DatosSimulacion *)user_data;
+    std::string nombre_diseño = gtk_entry_get_text(GTK_ENTRY(datos->entry_nombre_diseño));
+    int pos = buscarFiltroPorNombre(nombre_diseño);
+    if (pos != -1) {
+        filtro = filtros[pos];
+        mostrar_resultado(textview_result, filtro);
+        //mostrar interfaz
+    } else {
+        mostrar_error("No se encontró un filtro con ese nombre.");
+    }
+    gtk_widget_destroy(datos->dialogo);
 }
 
 void on_ok_clicked_guardar(GtkButton *button, gpointer user_data) {
 
 	DatosSimulacion *datos = (DatosSimulacion *)user_data;
 
-        std::string nombre_diseño = gtk_entry_get_text(GTK_ENTRY(datos->entry_nombre_diseño));
+    std::string nombre_diseño = gtk_entry_get_text(GTK_ENTRY(datos->entry_nombre_diseño));
 
-        if (nombre_diseño.empty()) {
-            mostrar_error("Por favor ingresa un nombre para el diseño.");
-            return;
-        }
+    if (nombre_diseño.empty()) {
+        mostrar_error("Por favor ingresa un nombre para el diseño.");
+        return;
+    }
 
-        if (datos->tipo_filtro == "RC") {
-            if (!validarEntradaNumerica(entry_R, "Resistencia") || 
-            !validarEntradaNumerica(entry_fc, "Frecuencia de Corte") ||
-            !validarTexto(entry_nombre, "Nombre") ||
-            !validarTexto(entry_id, "ID")) 
-        {
+    if (datos->tipo_filtro == "RC") {
+        if (!validarEntradaNumerica(entry_R, "Resistencia") || 
+        !validarEntradaNumerica(entry_fc, "Frecuencia de Corte") ||
+        !validarTexto(entry_nombre, "Nombre") ||
+        !validarTexto(entry_id, "ID")) 
+    {
+        mostrar_error("Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
+        return;
+    }
+    }
+    else if (datos->tipo_filtro == "RL") {
+        if (!validarEntradaNumerica(entry_R, "Resistencia") || 
+        !validarEntradaNumerica(entry_fc, "Frecuencia de Corte") || 
+        !validarTexto(entry_nombre, "Nombre") ||
+        !validarTexto(entry_id, "ID")) 
+    {
             mostrar_error("Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
-            return;
-        }
-        }
-        else if (datos->tipo_filtro == "RL") {
-            if (!validarEntradaNumerica(entry_R, "Resistencia") || 
-            !validarEntradaNumerica(entry_fc, "Frecuencia de Corte") || 
-            !validarTexto(entry_nombre, "Nombre") ||
-            !validarTexto(entry_id, "ID")) 
-        {
-             mostrar_error("Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
-            return;
-        }
-        }
-        else if (datos->tipo_filtro == "RLC") {
-            if (!validarEntradaNumerica(entry_R, "Resistencia") || 
-            !validarEntradaNumerica(entry_fc, "Frecuencia de Corte") || 
-            !validarEntradaNumerica(entry_C, "Capacitancia") ||
-            !validarTexto(entry_nombre, "Nombre") ||
-            !validarTexto(entry_id, "ID")) 
-        {
-            mostrar_error("Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
-            return;
-        }
-        }
-        guardarDiseño(filtro, inge, nombre_diseño);
-        gtk_widget_destroy(datos->dialogo);
+        return;
+    }
+    }
+    else if (datos->tipo_filtro == "RLC") {
+        if (!validarEntradaNumerica(entry_R, "Resistencia") || 
+        !validarEntradaNumerica(entry_fc, "Frecuencia de Corte") || 
+        !validarEntradaNumerica(entry_C, "Capacitancia") ||
+        !validarTexto(entry_nombre, "Nombre") ||
+        !validarTexto(entry_id, "ID")) 
+    {
+        mostrar_error("Error en los datos de entrada. Asegúrate de llenar todos los campos correctamente con valores válidos.");
+        return;
+    }
+    }
+    guardarDiseño(filtro, inge, nombre_diseño);
+    gtk_widget_destroy(datos->dialogo);
 
 }
 
@@ -235,18 +252,22 @@ void on_editar_filtro(GtkWidget *widget, gpointer data) {
     vbox = gtk_vbox_new(FALSE, 5);
 
     label = gtk_label_new("Id del diseño a editar:");
-    entry = gtk_entry_new();
-    gtk_widget_modify_text(entry, GTK_STATE_NORMAL, &color_negro);
+    entry_editar = gtk_entry_new();
+    gtk_widget_modify_text(entry_editar, GTK_STATE_NORMAL, &color_negro);
+
+    DatosSimulacion *datos = new DatosSimulacion();
+        datos->dialogo = dialog;
+        datos->entry_nombre_diseño = entry_editar;
 
     gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), entry_editar, FALSE, FALSE, 0);
     gtk_container_add(GTK_CONTAINER(content_area), vbox);
 
     GtkWidget *ok_button = gtk_button_new_with_label("OK");
 	GtkWidget *ok_label = gtk_bin_get_child(GTK_BIN(ok_button));
 	gtk_widget_modify_fg(ok_label, GTK_STATE_NORMAL, &color_negro);
 	gtk_widget_modify_fg(ok_label, GTK_STATE_PRELIGHT, &color_negro);
-	g_signal_connect(ok_button, "clicked", G_CALLBACK(on_ok_clicked_edit), dialog);
+	g_signal_connect(ok_button, "clicked", G_CALLBACK(on_ok_clicked_edit), datos);
 	
     GtkWidget *cancel_button = gtk_button_new_with_label("Cancelar");
 	GtkWidget *cancel_label = gtk_bin_get_child(GTK_BIN(cancel_button));
@@ -278,19 +299,23 @@ void on_buscar_filtro(GtkWidget *widget, gpointer data) {
     content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
     vbox = gtk_vbox_new(FALSE, 5);
 
-    label = gtk_label_new("Id del diseño a buscar:");
-    entry = gtk_entry_new();
-    gtk_widget_modify_text(entry, GTK_STATE_NORMAL, &color_negro);
+    label = gtk_label_new("Nombre del diseño a buscar:");
+    entry_buscar = gtk_entry_new();
+    gtk_widget_modify_text(entry_buscar, GTK_STATE_NORMAL, &color_negro);
+
+        DatosSimulacion *datos = new DatosSimulacion();
+        datos->dialogo = dialog;
+        datos->entry_nombre_diseño = entry_buscar;
 
     gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), entry_buscar, FALSE, FALSE, 0);
     gtk_container_add(GTK_CONTAINER(content_area), vbox);
 
     GtkWidget *ok_button = gtk_button_new_with_label("OK");
 	GtkWidget *ok_label = gtk_bin_get_child(GTK_BIN(ok_button));
 	gtk_widget_modify_fg(ok_label, GTK_STATE_NORMAL, &color_negro);
 	gtk_widget_modify_fg(ok_label, GTK_STATE_PRELIGHT, &color_negro);
-	g_signal_connect(ok_button, "clicked", G_CALLBACK(on_ok_clicked_busc), dialog);
+	g_signal_connect(ok_button, "clicked", G_CALLBACK(on_ok_clicked_busc), datos);
 	
     GtkWidget *cancel_button = gtk_button_new_with_label("Cancelar");
 	GtkWidget *cancel_label = gtk_bin_get_child(GTK_BIN(cancel_button));
@@ -324,18 +349,22 @@ void on_eliminar_filtro(GtkWidget *widget, gpointer data) {
     vbox = gtk_vbox_new(FALSE, 5);
 
     label = gtk_label_new("Id del diseño a eliminar:");
-    entry = gtk_entry_new();
-    gtk_widget_modify_text(entry, GTK_STATE_NORMAL, &color_negro);
+    entry_eliminar = gtk_entry_new();
+    gtk_widget_modify_text(entry_eliminar, GTK_STATE_NORMAL, &color_negro);
+
+    DatosSimulacion *datos = new DatosSimulacion();
+        datos->dialogo = dialog;
+        datos->entry_nombre_diseño = entry_eliminar;
 
     gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), entry_eliminar, FALSE, FALSE, 0);
     gtk_container_add(GTK_CONTAINER(content_area), vbox);
 
     GtkWidget *ok_button = gtk_button_new_with_label("OK");
 	GtkWidget *ok_label = gtk_bin_get_child(GTK_BIN(ok_button));
 	gtk_widget_modify_fg(ok_label, GTK_STATE_NORMAL, &color_negro);
 	gtk_widget_modify_fg(ok_label, GTK_STATE_PRELIGHT, &color_negro);
-	g_signal_connect(ok_button, "clicked", G_CALLBACK(on_ok_clicked_elimin), dialog);
+	g_signal_connect(ok_button, "clicked", G_CALLBACK(on_ok_clicked_elimin), datos);
 	
     GtkWidget *cancel_button = gtk_button_new_with_label("Cancelar");
 	GtkWidget *cancel_label = gtk_bin_get_child(GTK_BIN(cancel_button));

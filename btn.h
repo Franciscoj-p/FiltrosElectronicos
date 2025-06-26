@@ -9,6 +9,10 @@ struct DatosSimulacion {
 };
 
 extern GtkWidget *entry_guardar;
+extern GtkWidget *entry_buscar;
+extern GtkWidget *entry_eliminar;
+extern GtkWidget *entry_editar;
+
 
 void on_ingresar(GtkWidget *widget, gpointer data);
 void on_aceptar(GtkWidget *widget, gpointer data);

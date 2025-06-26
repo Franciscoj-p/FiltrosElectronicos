@@ -9,47 +9,7 @@
 #include <sstream>
 #include <iomanip>  
 
-void guardarDiseño(datosFiltro resultado, datosIngeniero ing, //std::vector<Filtros>,
-                  std::string nombreDiseño) {
-    std::string nombre = nombreDiseño;
-    std::string tipo_filtro = resultado.tipo_filtro;
-    std::string configuracion = resultado.configuracion;
-    double r = resultado.r;
-    double c = resultado.c;
-    double l = resultado.l;
-    double fc = resultado.fc;
-    double BW = resultado.BW;
-    double Q = resultado.Q;
-    double G = resultado.G;
-    double G_dB = resultado.G_dB;
-    datosIngeniero ingeniero = ing;
-
-    // Imprimir en consola los datos para debug
-    std::cout << "Guardando diseño: " << nombre << std::endl;
-    std::cout << "Tipo de filtro: " << tipo_filtro << std::endl;
-    std::cout << "Configuración: " << configuracion << std::endl;
-    std::cout << "Resistencia (R): " << r << " Ω" << std::endl;
-    std::cout << "Capacitancia (C): " << c << " F" << std::endl;
-    std::cout << "Inductancia (L): " << l << " H" << std::endl;
-    std::cout << "Frecuencia de corte (fc): " << fc << " Hz" << std::endl;
-    std::cout << "Ancho de banda (BW): " << BW << " Hz" << std::endl;
-    std::cout << "Factor de calidad (Q): " << Q << std::endl;
-    std::cout << "Ganancia (G): " << G << " (" << G_dB << " dB)" << std::endl;
-    std::cout << "Datos del ingeniero:" << std::endl;
-    std::cout << "  Nombre: " << ingeniero.nombre << std::endl;
-    std::cout << "  Correo: " << ingeniero.correo << std::endl;
-    std::cout << "  ID: " << ingeniero.id << std::endl;
-
-    //Guardar en matriz
-    //buscar si ya existe un filtro con el mismo nombre
-
-}
-
-std::string to_str(double valor, int decimales = 2) {  //redondear a decimales
-    std::ostringstream ss;
-    ss << std::fixed << std::setprecision(decimales) << valor;
-    return ss.str();
-}
+std::vector<datosFiltro> filtros;
 
 double costo_componente(double valor, std::string tipo) {
     if (tipo == "R") {
@@ -78,6 +38,84 @@ double costo_total(const datosFiltro& filtro) {
     return costo_total;
 }
 
+void agregarFiltro(const datosFiltro& nuevo) {
+    bool insertado = false;
+
+    for (int i = 0; i < filtros.size(); i++) {
+        if (nuevo.costo < filtros[i].costo) {
+            filtros.insert(filtros.begin() + i, nuevo);
+            insertado = true;
+            break;
+        }
+    }
+
+    if (!insertado) {
+        filtros.push_back(nuevo); // al final
+    }
+}
+
+void guardarDiseño(datosFiltro resultado, datosIngeniero ing, std::string nombreDiseño) {
+    std::string nombre = nombreDiseño;
+    std::string tipo_filtro = resultado.tipo_filtro;
+    std::string configuracion = resultado.configuracion;
+    double r = resultado.r;
+    double c = resultado.c;
+    double l = resultado.l;
+    double fc = resultado.fc;
+    double BW = resultado.BW;
+    double Q = resultado.Q;
+    double G = resultado.G;
+    double G_dB = resultado.G_dB;
+    datosIngeniero ingeniero = ing;
+
+    //debug
+    std::cout << "Guardando diseño: " << nombre << std::endl;
+    std::cout << "Tipo de filtro: " << tipo_filtro << std::endl;
+    std::cout << "Configuración: " << configuracion << std::endl;
+    std::cout << "Resistencia (R): " << r << " Ω" << std::endl;
+    std::cout << "Capacitancia (C): " << c << " F" << std::endl;
+    std::cout << "Inductancia (L): " << l << " H" << std::endl;
+    std::cout << "Frecuencia de corte (fc): " << fc << " Hz" << std::endl;
+    std::cout << "Ancho de banda (BW): " << BW << " Hz" << std::endl;
+    std::cout << "Factor de calidad (Q): " << Q << std::endl;
+    std::cout << "Ganancia (G): " << G << " (" << G_dB << " dB)" << std::endl;
+    std::cout << "Datos del ingeniero:" << std::endl;
+    std::cout << "  Nombre: " << ingeniero.nombre << std::endl;
+    std::cout << "  Correo: " << ingeniero.correo << std::endl;
+    std::cout << "  ID: " << ingeniero.id << std::endl;
+
+    //buscar si ya existe
+    int pos = buscarFiltroPorNombre(nombre);
+    if (pos != -1) {
+        //ya existe mostrar mensaje
+        std::cout << "El filtro con el nombre '" << nombre << "' ya existe." << std::endl;
+    }
+    else {
+        datosFiltro nuevo_filtro;
+        nuevo_filtro.nombre = nombre;
+        nuevo_filtro.tipo_filtro = tipo_filtro;
+        nuevo_filtro.configuracion = configuracion;
+        nuevo_filtro.r = r;
+        nuevo_filtro.c = c;
+        nuevo_filtro.l = l;
+        nuevo_filtro.fc = fc;
+        nuevo_filtro.BW = BW;
+        nuevo_filtro.Q = Q;
+        nuevo_filtro.G = G;
+        nuevo_filtro.G_dB = G_dB;
+        nuevo_filtro.costo = costo_total(resultado);
+        nuevo_filtro.ingeniero = ingeniero;
+
+        agregarFiltro(nuevo_filtro);
+        std::cout << "Filtro guardado exitosamente." << std::endl;
+    }
+}
+
+std::string to_str(double valor, int decimales = 2) { 
+    std::ostringstream ss;
+    ss << std::fixed << std::setprecision(decimales) << valor;
+    return ss.str();
+}
 
 void mostrar_resultado(GtkWidget *textview_result, datosFiltro resultado) {
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview_result));
@@ -131,7 +169,6 @@ void mostrar_resultado(GtkWidget *textview_result, datosFiltro resultado) {
     gtk_text_buffer_set_text(buffer, texto.c_str(), -1);
 }
 
-
 datosIngeniero guardarDatosIng(GtkWidget *entry_nombre, GtkWidget *entry_correo, GtkWidget *entry_id) {
 
         std::string nombre = gtk_entry_get_text(GTK_ENTRY(entry_nombre));
@@ -172,7 +209,6 @@ double calcular_error_fc(double fc_ingresada, double fc_real) {
     double error = std::abs(fc_real - fc_ingresada) / fc_ingresada;
     return error * 100.0;
 }
-
 
 datosFiltro calcular_rc(GtkWidget *entry_R, GtkWidget *entry_fc, 
                         GtkWidget *radio_pasa_banda, GtkWidget *radio_rechaza_banda, GtkWidget *radio_serie12,
