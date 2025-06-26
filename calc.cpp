@@ -50,7 +50,7 @@ void agregarFiltro(const datosFiltro& nuevo) {
     }
 
     if (!insertado) {
-        filtros.push_back(nuevo); // al final
+        filtros.push_back(nuevo); 
     }
 }
 
