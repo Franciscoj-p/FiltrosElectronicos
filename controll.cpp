@@ -23,6 +23,8 @@ GtkWidget *entry_fc;
 GtkWidget *textview_result;
 GtkWidget *radio_pasa_banda;
 GtkWidget *radio_rechaza_banda;
+GtkWidget *radio_serie12;
+GtkWidget *radio_serie24;
 
 GdkColor color_negro = {0, 0, 0, 0};
 GdkColor color_blanco= {0, 0, 0, 0};
@@ -318,6 +320,14 @@ void ventana_rc() {
     gtk_box_pack_start(GTK_BOX(vbox), label_fc, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), entry_fc, FALSE, FALSE, 5);
 
+    GtkWidget *label_serie = gtk_label_new("Seleccione la serie de componentes:");
+    gtk_misc_set_alignment(GTK_MISC(label_serie), 0, 0.5);
+    gtk_box_pack_start(GTK_BOX(vbox), label_serie, FALSE, FALSE, 5);
+    radio_serie12 = gtk_radio_button_new_with_label(NULL, "Serie E12 (tolerancia ±10%)");
+    radio_serie24 = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio_serie12), "Serie E24 (tolerancia ±5%)");
+    gtk_box_pack_start(GTK_BOX(vbox), radio_serie12, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), radio_serie24, FALSE, FALSE, 0);
+
     GtkWidget *label_result = gtk_label_new("Resultados:");
     gtk_misc_set_alignment(GTK_MISC(label_result), 0, 0.5);
     textview_result = gtk_text_view_new();
@@ -339,13 +349,6 @@ void ventana_rc() {
     gtk_widget_modify_fg(label_calcular, GTK_STATE_PRELIGHT, &color_negro);
     gtk_box_pack_start(GTK_BOX(vbox), btn_calcular, FALSE, FALSE, 10);
     g_signal_connect(btn_calcular, "clicked", G_CALLBACK(on_calcularRC), NULL);
-
-    GtkWidget *btn_simular = gtk_button_new_with_label("Simular");
-    GtkWidget *label_simular = gtk_bin_get_child(GTK_BIN(btn_simular));
-    gtk_widget_modify_fg(label_simular, GTK_STATE_NORMAL, &color_negro);
-    gtk_widget_modify_fg(label_simular, GTK_STATE_PRELIGHT, &color_negro);
-    gtk_box_pack_start(GTK_BOX(vbox), btn_simular, FALSE, FALSE, 10);
-    g_signal_connect(btn_simular, "clicked", G_CALLBACK(on_simular), NULL);
 
     GtkWidget *btn_guardar = gtk_button_new_with_label("Guardar");
     GtkWidget *label_guardar = gtk_bin_get_child(GTK_BIN(btn_guardar));
@@ -398,6 +401,14 @@ void ventana_rl() {
     gtk_box_pack_start(GTK_BOX(vbox), label_fc, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), entry_fc, FALSE, FALSE, 5);
 
+    GtkWidget *label_serie = gtk_label_new("Seleccione la serie de componentes:");
+    gtk_misc_set_alignment(GTK_MISC(label_serie), 0, 0.5);
+    gtk_box_pack_start(GTK_BOX(vbox), label_serie, FALSE, FALSE, 5);
+    radio_serie12 = gtk_radio_button_new_with_label(NULL, "Serie E12 (tolerancia ±10%)");
+    radio_serie24 = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio_serie12), "Serie E24 (tolerancia ±5%)");
+    gtk_box_pack_start(GTK_BOX(vbox), radio_serie12, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), radio_serie24, FALSE, FALSE, 0);
+
     GtkWidget *label_result = gtk_label_new("Resultados:");
     gtk_misc_set_alignment(GTK_MISC(label_result), 0, 0.5);
     textview_result = gtk_text_view_new();
@@ -419,13 +430,6 @@ void ventana_rl() {
     gtk_widget_modify_fg(label_calcular, GTK_STATE_PRELIGHT, &color_negro);
     gtk_box_pack_start(GTK_BOX(vbox), btn_calcular, FALSE, FALSE, 10);
     g_signal_connect(btn_calcular, "clicked", G_CALLBACK(on_calcularRL), NULL);
-
-    GtkWidget *btn_simular = gtk_button_new_with_label("Simular");
-    GtkWidget *label_simular = gtk_bin_get_child(GTK_BIN(btn_simular));
-    gtk_widget_modify_fg(label_simular, GTK_STATE_NORMAL, &color_negro);
-    gtk_widget_modify_fg(label_simular, GTK_STATE_PRELIGHT, &color_negro);
-    gtk_box_pack_start(GTK_BOX(vbox), btn_simular, FALSE, FALSE, 10);
-    g_signal_connect(btn_simular, "clicked", G_CALLBACK(on_simular), NULL);
 
     GtkWidget *btn_guardar = gtk_button_new_with_label("Guardar");
     GtkWidget *label_guardar = gtk_bin_get_child(GTK_BIN(btn_guardar));
@@ -485,6 +489,14 @@ void ventana_rlc() {
     gtk_box_pack_start(GTK_BOX(vbox), label_fc, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), entry_fc, FALSE, FALSE, 5);
 
+    GtkWidget *label_serie = gtk_label_new("Seleccione la serie de componentes:");
+    gtk_misc_set_alignment(GTK_MISC(label_serie), 0, 0.5);
+    gtk_box_pack_start(GTK_BOX(vbox), label_serie, FALSE, FALSE, 5);
+    radio_serie12 = gtk_radio_button_new_with_label(NULL, "Serie E12 (tolerancia ±10%)");
+    radio_serie24 = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio_serie12), "Serie E24 (tolerancia ±5%)");
+    gtk_box_pack_start(GTK_BOX(vbox), radio_serie12, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), radio_serie24, FALSE, FALSE, 0);
+
     GtkWidget *label_result = gtk_label_new("Resultados:");
     gtk_misc_set_alignment(GTK_MISC(label_result), 0, 0.5);
     textview_result = gtk_text_view_new();
@@ -506,13 +518,6 @@ void ventana_rlc() {
     gtk_widget_modify_fg(label_calcular, GTK_STATE_PRELIGHT, &color_negro);
     gtk_box_pack_start(GTK_BOX(vbox), btn_calcular, FALSE, FALSE, 10);
     g_signal_connect(btn_calcular, "clicked", G_CALLBACK(on_calcularRLC), NULL);
-
-    GtkWidget *btn_simular = gtk_button_new_with_label("Simular");
-    GtkWidget *label_simular = gtk_bin_get_child(GTK_BIN(btn_simular));
-    gtk_widget_modify_fg(label_simular, GTK_STATE_NORMAL, &color_negro);
-    gtk_widget_modify_fg(label_simular, GTK_STATE_PRELIGHT, &color_negro);
-    gtk_box_pack_start(GTK_BOX(vbox), btn_simular, FALSE, FALSE, 10);
-    g_signal_connect(btn_simular, "clicked", G_CALLBACK(on_simular), NULL);
 
     GtkWidget *btn_guardar = gtk_button_new_with_label("Guardar");
     GtkWidget *label_guardar = gtk_bin_get_child(GTK_BIN(btn_guardar));

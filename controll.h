@@ -23,6 +23,8 @@ extern GtkWidget *entry_fc;
 extern GtkWidget *textview_result;
 extern GtkWidget *radio_pasa_banda;
 extern GtkWidget *radio_rechaza_banda;
+extern GtkWidget *radio_serie12;
+extern GtkWidget *radio_serie24;
 
 void ventana_main();
 void ventana_datos();

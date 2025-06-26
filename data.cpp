@@ -59,31 +59,33 @@ bool validarEntradaNumerica(GtkWidget *entry, const char *nombreCampo) {
 }
 
 bool validarTexto(GtkWidget *entry, const char *nombreCampo) {
-    const char *texto = gtk_entry_get_text(GTK_ENTRY(entry));
-    if (strlen(texto) == 0) {
+    std::string texto = gtk_entry_get_text(GTK_ENTRY(entry));
+    if (texto.empty()) {
         std::cerr << "Error: El campo " << nombreCampo << " está vacío." << std::endl;
         return false;
     }
     return true;
 }
 
-bool validarDatosIng(GtkWidget *entry_nombre, GtkWidget *entry_correo, GtkWidget *entry_id) {
-    const char *nombre = gtk_entry_get_text(GTK_ENTRY(entry_nombre));
-    const char *correo = gtk_entry_get_text(GTK_ENTRY(entry_correo));
-    const char *id     = gtk_entry_get_text(GTK_ENTRY(entry_id));
 
-    if (strlen(nombre) == 0 || strlen(correo) == 0 || strlen(id) == 0) {
-        std::cerr << "Error: Todos los campos deben estar llenos." << std::endl;
+bool validarDatosIng(GtkWidget *entry_nombre, GtkWidget *entry_correo, GtkWidget *entry_id) {
+    std::string nombre = gtk_entry_get_text(GTK_ENTRY(entry_nombre));
+    std::string correo = gtk_entry_get_text(GTK_ENTRY(entry_correo));
+    std::string id     = gtk_entry_get_text(GTK_ENTRY(entry_id));
+
+    if (nombre.empty() || correo.empty() || id.empty()) {
+        mostrar_error("Todos los campos deben estar llenos.");
         return false;
     }
 
-    if (strchr(correo, '@') == nullptr || strchr(correo, '.') == nullptr) {
-        std::cerr << "Error: El correo no es válido." << std::endl;
+    if (correo.find('@') == std::string::npos || correo.find('.') == std::string::npos) {
+        mostrar_error("El correo no es válido.");
         return false;
     }
 
     std::cout << "Nombre: " << nombre << std::endl;
     std::cout << "Correo: " << correo << std::endl;
     std::cout << "ID: " << id << std::endl;
+
     return true;
 }

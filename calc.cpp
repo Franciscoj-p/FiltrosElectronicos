@@ -95,6 +95,7 @@ void mostrar_resultado(GtkWidget *textview_result, datosFiltro resultado) {
     }
 
     texto += "Frecuencia de corte: " + to_str(fc_k) + " kHz\n";
+    texto += "Error de frecuencia de corte: " + to_str(resultado.err, 2) + "%\n";
     texto += "Ancho de banda: " + to_str(bw_k) + " kHz\n";
     texto += "Ganancia en fc: " + to_str(resultado.G, 3) + " (" + to_str(resultado.G_dB, 2) + " dB)\n";
 
@@ -103,35 +104,64 @@ void mostrar_resultado(GtkWidget *textview_result, datosFiltro resultado) {
 
 
 datosIngeniero guardarDatosIng(GtkWidget *entry_nombre, GtkWidget *entry_correo, GtkWidget *entry_id) {
-    const char *nombre = gtk_entry_get_text(GTK_ENTRY(entry_nombre));
-    const char *correo = gtk_entry_get_text(GTK_ENTRY(entry_correo));
-    const char *id     = gtk_entry_get_text(GTK_ENTRY(entry_id));
 
-    if (strlen(nombre) == 0 || strlen(correo) == 0 || strlen(id) == 0) {
-        std::cerr << "Error: Todos los campos deben estar llenos." << std::endl;
-        return {};
-    }
+        std::string nombre = gtk_entry_get_text(GTK_ENTRY(entry_nombre));
+        std::string correo = gtk_entry_get_text(GTK_ENTRY(entry_correo));
+        std::string id     = gtk_entry_get_text(GTK_ENTRY(entry_id));
 
-    if (strchr(correo, '@') == nullptr || strchr(correo, '.') == nullptr) {
-        std::cerr << "Error: El correo no es válido." << std::endl;
-        return {};
-    }
-
-    datosIngeniero ing;
-    ing.nombre = nombre;
-    ing.correo = correo;
-    ing.id     = id;
-
-    return ing;
+        datosIngeniero ing;
+        ing.nombre = nombre;
+        ing.correo = correo;
+        ing.id     = id;
+        return ing; 
 }
 
+double valor_comercial(double valor, const std::vector<double>& serie) {
+    double aprox = 0;
+    double mError = std::numeric_limits<double>::max(); //maximo valor de error
+
+    // probar 
+    for (int exp = -12; exp <= 6; ++exp) {
+        double factor = std::pow(10.0, exp);
+
+        for (size_t i = 0; i < serie.size(); ++i) {
+            double prueba = serie[i] * factor;
+            double error = std::abs(valor - prueba);
+
+            if (error < mError) {
+                aprox = prueba;
+                mError = error;
+            }
+        }
+    }
+
+    return aprox;
+}
+
+double calcular_error_fc(double fc_ingresada, double fc_real) {
+
+    double error = std::abs(fc_real - fc_ingresada) / fc_ingresada;
+    return error * 100.0;
+}
+
+
 datosFiltro calcular_rc(GtkWidget *entry_R, GtkWidget *entry_fc, 
-                        GtkWidget *radio_pasa_banda, GtkWidget *radio_rechaza_banda, 
-                        GtkWidget *entry_nombre) {
+                        GtkWidget *radio_pasa_banda, GtkWidget *radio_rechaza_banda, GtkWidget *radio_serie12,
+                        GtkWidget *radio_serie24, GtkWidget *entry_nombre) {
 
     double r = std::atof(gtk_entry_get_text(GTK_ENTRY(entry_R)));
-    double fc = std::atof(gtk_entry_get_text(GTK_ENTRY(entry_fc)));
-    double c = 1.0 / (2 * M_PI * r * fc);  // Cálculo del capacitor
+    double fc_ideal = std::atof(gtk_entry_get_text(GTK_ENTRY(entry_fc)));
+    double c = 1.0 / (2 * M_PI * r * fc_ideal);  // Cálculo del capacitor
+    std::vector<double> serie;
+
+    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio_serie12))) {
+         serie = SERIE_E12; 
+    } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio_serie24))) {
+        serie = SERIE_E24; 
+    }
+
+    c = valor_comercial(c, serie);    // valor comercial 
+    double fc = 1.0 / (2.0 * M_PI * r * c);
     std::string tipo_filtro; 
 
     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio_pasa_banda))) {
@@ -159,6 +189,7 @@ datosFiltro calcular_rc(GtkWidget *entry_R, GtkWidget *entry_fc,
     resultado.c = c;
     resultado.l = 0; // No aplica
     resultado.fc = fc;
+    resultado.err = calcular_error_fc(fc_ideal, fc);
     resultado.BW = BW;
     resultado.Q = 0; // No aplica
     resultado.G = G;
@@ -168,12 +199,23 @@ datosFiltro calcular_rc(GtkWidget *entry_R, GtkWidget *entry_fc,
 }
 
 datosFiltro calcular_rl(GtkWidget *entry_R, GtkWidget *entry_fc,
-    GtkWidget *radio_pasa_banda, GtkWidget *radio_rechaza_banda,
-    GtkWidget *entry_nombre) {
+    GtkWidget *radio_pasa_banda, GtkWidget *radio_rechaza_banda, GtkWidget *radio_serie12,
+    GtkWidget *radio_serie24, GtkWidget *entry_nombre) {
 
     double r = std::atof(gtk_entry_get_text(GTK_ENTRY(entry_R)));
-    double fc = std::atof(gtk_entry_get_text(GTK_ENTRY(entry_fc)));
-    double l = r / (2 * M_PI * fc);// Calcular inductancia 
+    double fc_ideal = std::atof(gtk_entry_get_text(GTK_ENTRY(entry_fc)));
+    double l = r / (2 * M_PI * fc_ideal);// Calcular inductancia 
+    std::vector<double> serie;
+
+    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio_serie12))) {
+        serie = SERIE_E12; 
+    } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio_serie24))) {
+        serie = SERIE_E24; 
+    }
+
+    l= valor_comercial(l, serie); // valor comercial
+    double fc = 1.0 / (2.0 * M_PI * r * l); 
+
 
     std::string tipo_filtro;
     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio_pasa_banda))) {
@@ -201,6 +243,7 @@ datosFiltro calcular_rl(GtkWidget *entry_R, GtkWidget *entry_fc,
     resultado.l = l;
     resultado.c = 0; // no aplica 
     resultado.fc = fc;
+    resultado.err = calcular_error_fc(fc_ideal, fc);
     resultado.BW = BW;
     resultado.G = G;
     resultado.G_dB = G_dB;
@@ -210,13 +253,24 @@ datosFiltro calcular_rl(GtkWidget *entry_R, GtkWidget *entry_fc,
 }
 
 datosFiltro calcular_rlc(GtkWidget *entry_R, GtkWidget *entry_C, GtkWidget *entry_fc,
-                        GtkWidget *radio_pasa_banda, GtkWidget *radio_rechaza_banda,
-                        GtkWidget *entry_nombre) {
+                        GtkWidget *radio_pasa_banda, GtkWidget *radio_rechaza_banda, GtkWidget *radio_serie12,
+                        GtkWidget *radio_serie24, GtkWidget *entry_nombre) {
 
     double r = std::atof(gtk_entry_get_text(GTK_ENTRY(entry_R)));
     double c = std::atof(gtk_entry_get_text(GTK_ENTRY(entry_C)));
-    double fc = std::atof(gtk_entry_get_text(GTK_ENTRY(entry_fc)));
-    double l = 1.0 / (pow(2 * M_PI * fc, 2) * c);// Calcular inductancia a partir de fc y C
+    double fc_ideal = std::atof(gtk_entry_get_text(GTK_ENTRY(entry_fc)));
+    double l = 1.0 / (pow(2 * M_PI * fc_ideal, 2) * c);// Calcular inductancia a partir de fc y C
+    std::vector<double> serie;
+
+    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio_serie12))) {
+        serie = SERIE_E12; 
+    } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radio_serie24))) {
+        serie = SERIE_E24; 
+    }
+
+    l = valor_comercial(l, serie); //valor comercial
+    c = valor_comercial(c, serie); 
+    double fc = 1.0 / (2.0 * M_PI * sqrt(l * c)); 
 
     double BW = r / l;
     double Q = fc / BW;
@@ -246,6 +300,7 @@ datosFiltro calcular_rlc(GtkWidget *entry_R, GtkWidget *entry_C, GtkWidget *entr
     resultado.c = c;
     resultado.l = l;
     resultado.fc = fc;
+    resultado.err = calcular_error_fc(fc_ideal, fc);
     resultado.BW = BW;
     resultado.Q = Q;
     resultado.G = G;
